@@ -1,13 +1,16 @@
+const path = require('path');
+const fs = require("fs");
 const Helper = require('./helper');
+const Constant = require('./constant');
 
-const inputFileName = ['WebModules'];
-const outputFileName = 'final';
+const inputFileName = Constant.io.inputFileName;
+const outputFileName = Constant.io.outputFileName;
 
 let packageProcessed = 0;
 let dependencyJson = [];
 inputFileName.forEach(eachFile => {
-  const packagePath = `app/input/${eachFile}.json`;
-  console.log('\x1b[35m', `\n\n>>> processing ${packagePath}`, '\x1b[0m');
+  const packagePath = path.join(__dirname, 'input', `${eachFile}${Constant.fileExtension.json}`);
+  console.log(Constant.color.magenta, `\n\n>>> processing ${packagePath}`, Constant.color.reset);
 
   const data = require(packagePath);
   const package = data.name.toLowerCase();
@@ -25,5 +28,6 @@ inputFileName.forEach(eachFile => {
 
 const sortedDependencyJson = dependencyJson.sort((a, b) => { return a.name > b.name ? 1 : -1; });
 
+(() => fs.existsSync(path.join(__dirname, 'output')) || fs.mkdirSync(path.join(__dirname, 'output')))();
 Helper.generateJsonFile(sortedDependencyJson, outputFileName);
 Helper.generateCsvFile(sortedDependencyJson, outputFileName);

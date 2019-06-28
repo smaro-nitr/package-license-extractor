@@ -1,6 +1,8 @@
 const execSync = require('child_process').execSync;
 const fs = require("fs");
+const path = require('path');
 const { Parser } = require('json2csv');
+const Constant = require('./constant');
 
 const getNewObject = (obj) => {
   return JSON.parse(JSON.stringify(obj));
@@ -11,7 +13,7 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
 	let packageProcessed = packageProcessedInit;
 
 	Object.keys(dependency).forEach(x => {
-    console.log('\x1b[34m', `${packageProcessed} : ${eachFileName} - ${x}@${dependency[x]}`, '\u001B[0m');
+    console.log(Constant.color.blue, `${packageProcessed} : ${eachFileName} - ${x}@${dependency[x]}`, Constant.color.reset);
 
     if (dependency[x].length <= 10) {
       const dependecyInfo = `npm view ${x}@${dependency[x]}`;
@@ -31,7 +33,8 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
       let pushToFinalObject = true;
       let oldMatchingValue = {};
       dependencyJson.forEach(y => {
-        if (x === y.name && dependency[x] === y.version) {
+        if (x.trim().toString() === y.name.trim().toString() &&
+          dependency[x].trim().toString() === y.version.trim().toString()) {
           pushToFinalObject = false;
           oldMatchingValue = y;
         }
@@ -51,31 +54,25 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
 };
 
 const generateJsonFile = (sortedDependencyJson, outputFileName) => {
+  const filePath = path.join('app', 'output', `${outputFileName}${Constant.fileExtension.json}`);
 	const beautifiedFinalJson = JSON.stringify(getNewObject(sortedDependencyJson), null, 4);
-
-	fs.writeFile(`app/output/${outputFileName}.json`, beautifiedFinalJson, (err) => {
-		if (err) console.log('\x1b[31m', err, '\u001B[0m');
-		console.log('\x1b[32m', 'Successfully generated the JSON file', '\u001B[0m');
+	fs.writeFile(filePath, beautifiedFinalJson, (err) => {
+		if (err) console.log(Constant.color.red, err, Constant.color.reset);
+		console.log(Constant.color.green, Constant.successText.json, Constant.color.reset);
 	});
 };
 
 const generateCsvFile = (sortedDependencyJson, outputFileName) => {
-	const fields = [
-		{ label: 'Name', value: 'name' },
-		{ label: 'Version', value: 'version' },
-		{ label: 'License', value: 'license' },
-		{ label: 'Link', value: 'link' },
-		{ label: 'Package', value: 'package' }
-	];
 	try {
-		const json2csvParser = new Parser({ fields });
-		const csv = json2csvParser.parse(sortedDependencyJson);
-		fs.writeFile(`app/output/${outputFileName}.csv`, csv, (err) => {
-			if (err) console.log('\x1b[31m', err, '\u001B[0m');
-			console.log('\x1b[32m', 'Successfully generated the CSV file', '\u001B[0m');
+    const filePath = path.join('app', 'output', `${outputFileName}${Constant.fileExtension.csv}`);
+		const json2csvParser = new Parser({ fields: Constant.csvField });
+		const csvParsedData = json2csvParser.parse(sortedDependencyJson);
+		fs.writeFile(filePath, csvParsedData, (err) => {
+			if (err) console.log(Constant.color.red, err, Constant.color.reset);
+			console.log(Constant.color.green, Constant.successText.json, Constant.color.reset);
 		});
 	} catch (err) {
-		console.log('\x1b[31m', err, '\u001B[0m');
+		console.log(Constant.color.red, err, Constant.color.reset);
 	}
 };
 
