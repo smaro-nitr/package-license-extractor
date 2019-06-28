@@ -1,0 +1,14 @@
+{
+  "name": "npm-license-extractor",
+  "version": "1.0.0",
+  "description": "extract npm license from package.json",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app/index.js"
+  },
+  "author": "Subhendu Kumar Sahoo <smaro.nitr@gmail.com>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "json2csv": "^4.5.1"
+  }
+}
