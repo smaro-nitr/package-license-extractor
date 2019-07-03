@@ -1,0 +1,37 @@
+{
+    "name": "media-panel-server",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+      "test": "mocha"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/AlphonsoCode/media-panel-server.git"
+    },
+    "keywords": [],
+    "author": "amitk",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/AlphonsoCode/media-panel-server/issues"
+    },
+    "homepage": "https://github.com/AlphonsoCode/media-panel-server#readme",
+    "dependencies": {
+      "alph-config": "^1.0.2",
+      "alph-db": "^2.0.0",
+      "alph-log": "^1.0.0",
+      "alph-mail": "^1.0.0",
+      "alph-server": "^1.1.1",
+      "alph-stats": "^2.0.0",
+      "alph-utils": "^1.0.1",
+      "bcryptjs": "^2.4.3",
+      "jsonwebtoken": "^8.5.0",
+      "randomstring": "^1.1.5",
+      "request-promise": "^4.2.4"
+    },
+    "devDependencies": {
+      "chai": "^4.2.0",
+      "mocha": "^6.1.4",
+      "sinon": "^7.3.2"
+    }
+  }

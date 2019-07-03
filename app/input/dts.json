@@ -1,0 +1,11 @@
+{
+    "name": "dts",
+    "version": "1.0.0",
+    "description": "Device Tracking Server",
+    "main": "../alphmain.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Alphonso Inc.",
+    "license": "UNLICENSED"
+  }

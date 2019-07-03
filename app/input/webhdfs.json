@@ -1,0 +1,50 @@
+{
+    "author": {
+      "name": "Harri Siirak",
+      "email": "harri.siirak@gmail.com"
+    },
+    "bugs": {
+      "url": "https://github.com/AlphonsoCode/webhdfs/issues"
+    },
+    "dependencies": {
+      "buffer-stream-reader": "^0.1.1",
+      "extend": "^3.0.0",
+      "request": "^2.74.0"
+    },
+    "description": "Node.js WebHDFS REST API client",
+    "devDependencies": {
+      "mocha": "^2.3.3",
+      "must": "^0.13.1",
+      "sinon": "^1.17.2",
+      "webhdfs-proxy": "^0.1.2",
+      "webhdfs-proxy-memory": "^0.1.2"
+    },
+    "directories": {},
+    "homepage": "https://github.com/AlphonsoCode/webhdfs#readme",
+    "keywords": [
+      "webhdfs",
+      "hadoop",
+      "big data",
+      "fs",
+      "storage"
+    ],
+    "license": "MIT",
+    "main": "lib/webhdfs.js",
+    "contributors": [
+      {
+        "name": "Tushar Gautam",
+        "email": "tushar@alphonso.tv"
+      }
+    ],
+    "name": "alph-webhdfs",
+    "optionalDependencies": {},
+    "repository": {
+      "type": "git",
+      "url": "git+ssh://github.com/AlphonsoCode/webhdfs.git"
+    },
+    "scripts": {
+      "test": "mocha --reporter spec test/"
+    },
+    "version": "1.1.6"
+  }
+  

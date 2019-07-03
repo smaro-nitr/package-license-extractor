@@ -1,5 +1,5 @@
 const io = {
-	inputFileName: ['insights', 'WebModules'], //need to be an input array
+	inputFileName: ['insights', 'WebModules','aas','cts','optout','sas','ums','server-ias'], //need to be an input array
 	outputFileName: 'final'
 };
 

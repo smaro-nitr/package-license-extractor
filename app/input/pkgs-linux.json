@@ -1,0 +1,23 @@
+{
+    "name": "pkgs-linux",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "dependencies": {
+      "less": "^2.7.1"
+    },
+    "devDependencies": {},
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/AlphonsoCode/pkgs-linux.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/AlphonsoCode/pkgs-linux/issues"
+    },
+    "homepage": "https://github.com/AlphonsoCode/pkgs-linux#readme"
+  }

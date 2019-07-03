@@ -1,0 +1,22 @@
+{
+    "name": "UMS",
+    "version": "1.0.0",
+    "description": "User Management Server",
+    "main": "../alphmain.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Alphonso Inc.",
+    "license": "UNLICENSED",
+    "dependencies": {
+      "alph2": "file:..",
+      "bcrypt": "^3.0.0",
+      "bcryptjs": "^2.4.3",
+      "express-jwt": "^5.3.1",
+      "fuzzy": "^0.1.3",
+      "jsonwebtoken": "^8.2.1",
+      "moment": "^2.22.1",
+      "request-promise": "^4.2.2",
+      "asyncawait": "^1.0.7"
+    }
+  }

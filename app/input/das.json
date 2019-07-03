@@ -1,0 +1,38 @@
+{
+    "name": "DAS",
+    "version": "1.0.0",
+    "description": "Data Access Server",
+    "main": "../alphmain.js",
+    "scripts": {
+      "test": "jest",
+      "doc:build": "apidoc -i ../../jslib/db/resources/es-viewing -o docs/",
+      "doc:publish": "Our custom script to publish to docs.alphonso"
+    },
+    "jest": {
+      "verbose": true,
+      "testURL": "http://localhost/",
+      "transform": {
+        "^.+\\.json5?$": "json5-jest"
+      }
+    },
+    "author": "Alphonso Inc.",
+    "license": "UNLICENSED",
+    "dependencies": {
+      "ahdfs": "file:../../jslib/ahdfs",
+      "alph2": "file:..",
+      "elastic-builder": "^1.1.0",
+      "elasticsearch": "^13.3.1",
+      "express-fileupload": "0.4.0",
+      "express-jwt": "^5.3.1",
+      "flow": "^0.2.3",
+      "jest": "^23.6.0",
+      "json2csv": "^2.8.2",
+      "json5-jest": "^1.0.1",
+      "jsonwebtoken": "^8.2.1",
+      "kafka-node": "^2.2.1",
+      "moment": "^2.22.1",
+      "request-promise": "^4.2.2",
+      "supertest": "^3.1.0",
+      "uuid": "3.3.2"
+    }
+  }

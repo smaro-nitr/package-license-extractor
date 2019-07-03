@@ -1,0 +1,19 @@
+{
+    "name": "panel-app",
+    "version": "1.0.0",
+    "description": "Panel App Server",
+    "main": "../alphmain.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Alphonso Inc.",
+    "license": "UNLICENSED",
+    "dependencies": {
+      "alph2": "file:..",
+      "bcryptjs": "^2.4.3",
+      "google-auth-library": "^3.1.0",
+      "jsonwebtoken": "^8.5.0",
+      "randomstring": "^1.1.5",
+      "request-promise": "^4.2.4"
+    }
+  }
