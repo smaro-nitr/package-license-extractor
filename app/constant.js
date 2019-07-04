@@ -1,7 +1,7 @@
 const io = {
+	baseFolderName: 'app',
 	inputFolderName: 'input',
-	// inputFileName needs to be an array containing file name from app/input folder
-	inputFileName: ['insights', 'webmodules', 'aas', 'cts', 'optout', 'sas', 'ums', 'server-ias'],
+	inputFileName: [],
 	outputFolderName: 'output',
 	outputFileName: 'final'
 };
@@ -29,10 +29,11 @@ const csvField = [
 ];
 
 const textMessage = {
-	invalidInputFileName: 'Enter all file name in array format inside constant.js',
+	invalidInputFileName: 'No package.json file is availiable inside app/input folder',
 	fileReadException: 'File Read Exception: ',
 	invalidPackageJson: 'Invalid package.json',
 	npmException: 'NPM Exception: ',
+	invalidNpmDependency: 'Not a NPM dependency',
 	jsonSuccess: 'Successfully generated the JSON file',
 	csvSuccess: 'Successfully generated the CSV file'
 };

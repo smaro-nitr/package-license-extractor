@@ -3,17 +3,20 @@ const fs = require("fs");
 const Helper = require('./helper');
 const Constant = require('./constant');
 
-const inputFolderName = Constant.io.inputFolderName;
-const inputFileName = Constant.io.inputFileName;
-const outputFolderName = Constant.io.outputFolderName;
-const outputFileName = Constant.io.outputFileName;
+const baseFolderName = Constant.io.baseFolderName;
 
+const inputFolderName = Constant.io.inputFolderName;
+(() => fs.existsSync(path.join(__dirname, inputFolderName)) || fs.mkdirSync(path.join(__dirname, inputFolderName)))();
+const inputFileName = Helper.getInputFileName(path.join(baseFolderName, inputFolderName));
+
+const outputFolderName = Constant.io.outputFolderName;
 (() => fs.existsSync(path.join(__dirname, outputFolderName)) || fs.mkdirSync(path.join(__dirname, outputFolderName)))();
+const outputFileName = Constant.io.outputFileName;
 
 let packageProcessed = 0;
 let dependencyJson = [];
 let generateFile = false;
-Array.isArray(inputFileName) ?
+if (Array.isArray(inputFileName) && inputFileName.length > 0) {
   inputFileName.forEach(eachFile => {
     const packagePath = path.join(__dirname, inputFolderName, `${eachFile}${Constant.fileExtension.json}`);
     console.log(Constant.color.magenta, `\n>>> processing ${packagePath}`, Constant.color.reset);
@@ -41,8 +44,9 @@ Array.isArray(inputFileName) ?
       console.log(Constant.color.red, Constant.textMessage.fileReadException + err, Constant.color.reset);
     }
   })
-  :
+} else {
   console.log(Constant.color.red, Constant.textMessage.invalidInputFileName, Constant.color.reset);
+}
 
 const sortedDependencyJson = dependencyJson.sort((a, b) => { return a.name > b.name ? 1 : -1; });
 

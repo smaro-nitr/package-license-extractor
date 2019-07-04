@@ -4,6 +4,18 @@ const path = require('path');
 const { Parser } = require('json2csv');
 const Constant = require('./constant');
 
+const getInputFileName = (dirPath) => {
+  const inputFileName = [];
+
+  fs.readdirSync(dirPath).forEach(filename => {
+    const fileName = path.parse(filename).name;
+    const fileExtension = path.parse(filename).ext;
+    if (fileExtension === Constant.fileExtension.json) inputFileName.push(fileName);
+  });
+
+  return inputFileName;
+}
+
 const getNewObject = (obj) => {
   return JSON.parse(JSON.stringify(obj));
 };
@@ -22,32 +34,37 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
       packageProcessed++;
       console.log(Constant.color.blue, `${packageProcessed} : ${eachFileName} - ${dependencyName}@${dependencyVersion}`, Constant.color.reset);
       
+      const isNpmDependency = dependencyVersion.toString().toLowerCase().indexOf('file') < 0;
       try {
-        let pushToFinalObject = true;
-        let oldMatchingValue = {};
-        dependencyJson.forEach(existingDependency => {
-          const existingDependencyName = existingDependency.name;
-          const existingDependencyVersion = existingDependency.version;
-          if (dependencyName === existingDependencyName && dependencyVersion === existingDependencyVersion) {
+        if(isNpmDependency) {
+          let pushToFinalObject = true;
+          let oldMatchingValue = {};
+          dependencyJson.forEach(existingDependency => {
+            const existingDependencyName = existingDependency.name;
+            const existingDependencyVersion = existingDependency.version;
+            if (dependencyName === existingDependencyName && dependencyVersion === existingDependencyVersion) {
+              pushToFinalObject = false;
+              oldMatchingValue = existingDependency;
+            }
+          });
+
+          if (pushToFinalObject) {
+            const dependecyInfo = `npm view ${dependencyName}@${dependencyVersion}`;
+            const dependecyInfoString = execSync(dependecyInfo).toString('utf8');
+            const nextLineSplitArray = dependecyInfoString.split('\n');
+            const escapeSplitArray = nextLineSplitArray[1].split('\u001b');
+            const license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
+
+            const urlVersionDependency = `npm view ${dependencyName}@^${dependencyVersion} npm repository.url`;
+            const link = getHttpsUrl(execSync(urlVersionDependency).toString('utf8').trim());
+
+            dependencyJson.push({ name: dependencyName, version: dependencyVersion, license, link, packageName });
             pushToFinalObject = false;
-            oldMatchingValue = existingDependency;
+          } else {
+            oldMatchingValue.packageName += `, ${packageName}`;
           }
-        });
-
-        if (pushToFinalObject) {
-          const dependecyInfo = `npm view ${dependencyName}@${dependencyVersion}`;
-          const dependecyInfoString = execSync(dependecyInfo).toString('utf8');
-          const nextLineSplitArray = dependecyInfoString.split('\n');
-          const escapeSplitArray = nextLineSplitArray[1].split('\u001b');
-          const license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
-
-          const urlVersionDependency = `npm view ${dependencyName}@^${dependencyVersion} npm repository.url`;
-          const link = getHttpsUrl(execSync(urlVersionDependency).toString('utf8').trim());
-
-          dependencyJson.push({ name: dependencyName, version: dependencyVersion, license, link, packageName });
-          pushToFinalObject = false;
         } else {
-          oldMatchingValue.packageName += `, ${packageName}`;
+          throw Constant.textMessage.invalidNpmDependency;
         }
       } catch (err) {
         dependencyJson.push({ name: dependencyName, version: dependencyVersion, license: 'UNKNOWN', link: 'NA', packageName: 'NA' });
@@ -82,4 +99,4 @@ const generateCsvFile = (sortedDependencyJson, outputFileName) => {
   }
 };
 
-module.exports = { extractDependencyInfo, generateJsonFile, generateCsvFile };
+module.exports = { getInputFileName, extractDependencyInfo, generateJsonFile, generateCsvFile };
