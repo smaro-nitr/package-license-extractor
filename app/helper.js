@@ -8,17 +8,21 @@ const getNewObject = (obj) => {
   return JSON.parse(JSON.stringify(obj));
 };
 
+const getHttpsUrl = (link) => {
+  let httpsUrl = Constant.https + link.substring(link.indexOf('github.com'), link.length);
+  return httpsUrl;
+}
+
 const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, dependency, eachFileName, packageName) => {
   const dependencyJson = getNewObject(dependencyInfoInit);
   let packageProcessed = packageProcessedInit;
   if (dependency) {
     Object.keys(dependency).forEach(dependencyName => {
       const dependencyVersion = dependency[dependencyName];
+      packageProcessed++;
       console.log(Constant.color.blue, `${packageProcessed} : ${eachFileName} - ${dependencyName}@${dependencyVersion}`, Constant.color.reset);
       
       try {
-        packageProcessed++;
-
         let pushToFinalObject = true;
         let oldMatchingValue = {};
         dependencyJson.forEach(existingDependency => {
@@ -54,11 +58,6 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
 
   return { dependencyJson, packageProcessed };
 };
-
-const getHttpsUrl = (link) => {
-  let httpsUrl = Constant.https + link.substring(link.indexOf('github.com'), link.length);
-  return httpsUrl;
-}
 
 const generateJsonFile = (sortedDependencyJson, outputFileName) => {
   const filePath = path.join('app', 'output', `${outputFileName}${Constant.fileExtension.json}`);

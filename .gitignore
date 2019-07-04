@@ -1,4 +1,3 @@
 node_modules
-app/input/*
 app/output/*
 package-lock.json
