@@ -11,17 +11,16 @@ let dependencyJson = [];
 inputFileName.forEach(eachFile => {
   const packagePath = path.join(__dirname, 'input', `${eachFile}${Constant.fileExtension.json}`);
   console.log(Constant.color.magenta, `\n\n>>> processing ${packagePath}`, Constant.color.reset);
-
   const data = require(packagePath);
-  const package = data.name.toLowerCase();
+  const packageName = data.name.toLowerCase();
   const prodDependency = data.dependencies;
   const devDependency = data.devDependencies;
 
-  const prodDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, prodDependency, eachFile, package);
+  const prodDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, prodDependency, eachFile, packageName);
   dependencyJson = prodDependencyInfo.dependencyJson;
   packageProcessed = prodDependencyInfo.packageProcessed;
 
-  const devDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, devDependency, eachFile, package);
+  const devDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, devDependency, eachFile, packageName);
   dependencyJson = devDependencyInfo.dependencyJson;
   packageProcessed = devDependencyInfo.packageProcessed;
 });

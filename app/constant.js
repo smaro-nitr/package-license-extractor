@@ -1,5 +1,6 @@
 const io = {
-	inputFileName: ['insights', 'WebModules','aas','cts','optout','sas','ums','server-ias'], //need to be an input array
+	// inputFileName needs to be an array containing file name from app/input folder
+	inputFileName: ['insights', 'webmodules', 'aas', 'cts', 'optout', 'sas', 'ums', 'server-ias'],
 	outputFileName: 'final'
 };
 
@@ -22,14 +23,15 @@ const csvField = [
 	{ label: 'Version', value: 'version' },
 	{ label: 'License', value: 'license' },
 	{ label: 'Link', value: 'link' },
-	{ label: 'Package', value: 'package' }
+	{ label: 'Package', value: 'packageName' }
 ];
 
-const successText = {
-	json: 'Successfully generated the Json file',
-	csv: 'Successfully generated the Csv file'
+const textMessage = {
+	npmException: 'NPM exception: ',
+	jsonSuccess: 'Successfully generated the Json file',
+	csvSuccess: 'Successfully generated the Csv file'
 };
 
-module.exports = { io, color, fileExtension, csvField, successText };
+const https = 'https://';
 
-
+module.exports = { io, color, fileExtension, csvField, textMessage, https };
