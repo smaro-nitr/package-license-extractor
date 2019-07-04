@@ -49,13 +49,13 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
           });
 
           if (pushToFinalObject) {
-            const dependecyInfo = `npm view ${dependencyName}@${dependencyVersion}`;
+            const dependecyInfo = `npm view ${dependencyName}@${dependencyVersion} --silent`;
             const dependecyInfoString = execSync(dependecyInfo).toString('utf8');
             const nextLineSplitArray = dependecyInfoString.split('\n');
             const escapeSplitArray = nextLineSplitArray[1].split('\u001b');
             const license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
 
-            const urlVersionDependency = `npm view ${dependencyName}@^${dependencyVersion} npm repository.url`;
+            const urlVersionDependency = `npm view ${dependencyName}@^${dependencyVersion} npm repository.url --silent`;
             const link = getHttpsUrl(execSync(urlVersionDependency).toString('utf8').trim());
 
             dependencyJson.push({ name: dependencyName, version: dependencyVersion, license, link, packageName });

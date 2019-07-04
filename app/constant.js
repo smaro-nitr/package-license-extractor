@@ -30,10 +30,10 @@ const csvField = [
 
 const textMessage = {
 	invalidInputFileName: 'No package.json file is availiable inside app/input folder',
-	fileReadException: 'File Read Exception: ',
+	fileReadException: 'File read exception: ',
 	invalidPackageJson: 'Invalid package.json',
-	npmException: 'NPM Exception: ',
-	invalidNpmDependency: 'Not a NPM dependency',
+	npmException: 'NPM exception: ',
+	invalidNpmDependency: 'Local dependency file',
 	jsonSuccess: 'Successfully generated the JSON file',
 	csvSuccess: 'Successfully generated the CSV file'
 };
