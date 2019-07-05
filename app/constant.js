@@ -1,5 +1,8 @@
 const io = {
-	inputFileName: ['insights', 'WebModules'], //need to be an input array
+	baseFolderName: 'app',
+	inputFolderName: 'input',
+	inputFileName: [],
+	outputFolderName: 'output',
 	outputFileName: 'final'
 };
 
@@ -22,14 +25,19 @@ const csvField = [
 	{ label: 'Version', value: 'version' },
 	{ label: 'License', value: 'license' },
 	{ label: 'Link', value: 'link' },
-	{ label: 'Package', value: 'package' }
+	{ label: 'Package', value: 'packageName' }
 ];
 
-const successText = {
-	json: 'Successfully generated the Json file',
-	csv: 'Successfully generated the Csv file'
+const textMessage = {
+	invalidInputFileName: 'No package.json file is availiable inside app/input folder',
+	fileReadException: 'File read exception: ',
+	invalidPackageJson: 'Invalid package.json',
+	npmException: 'NPM exception: ',
+	invalidNpmDependency: 'Local dependency file',
+	jsonSuccess: 'Successfully generated the JSON file',
+	csvSuccess: 'Successfully generated the CSV file'
 };
 
-module.exports = { io, color, fileExtension, csvField, successText };
+const https = 'https://';
 
-
+module.exports = { io, color, fileExtension, csvField, textMessage, https };

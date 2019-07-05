@@ -1,79 +1,103 @@
 const execSync = require('child_process').execSync;
-const fs = require("fs");
+const fs = require('fs');
 const path = require('path');
 const { Parser } = require('json2csv');
 const Constant = require('./constant');
+
+const getInputFileName = (dirPath) => {
+  const inputFileName = [];
+
+  fs.readdirSync(dirPath).forEach(filename => {
+    const fileName = path.parse(filename).name;
+    const fileExtension = path.parse(filename).ext;
+    if (fileExtension === Constant.fileExtension.json) inputFileName.push(fileName);
+  });
+
+  return inputFileName;
+}
 
 const getNewObject = (obj) => {
   return JSON.parse(JSON.stringify(obj));
 };
 
-const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, dependency, eachFileName, package) => {
-	const dependencyJson = getNewObject(dependencyInfoInit);
-	let packageProcessed = packageProcessedInit;
+const getHttpsUrl = (link) => {
+  let httpsUrl = link ? Constant.https + link.substring(link.indexOf('github.com'), link.length) : 'NA';
+  return httpsUrl;
+}
 
-	Object.keys(dependency).forEach(x => {
-    console.log(Constant.color.blue, `${packageProcessed} : ${eachFileName} - ${x}@${dependency[x]}`, Constant.color.reset);
-
-    if (dependency[x].length <= 10) {
-      const dependecyInfo = `npm view ${x}@${dependency[x]}`;
-      const dependecyInfoString = execSync(dependecyInfo).toString('utf8');
+const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, dependency, eachFileName, packageName) => {
+  const dependencyJson = getNewObject(dependencyInfoInit);
+  let packageProcessed = packageProcessedInit;
+  if (dependency === Object(dependency)) {
+    Object.keys(dependency).forEach(dependencyName => {
+      const dependencyVersion = dependency[dependencyName];
       packageProcessed++;
-
-      const nextLineSplitArray = dependecyInfoString.split('\n');
-      const escapeSplitArray = nextLineSplitArray[1].split('\u001b');
-
-      const name = escapeSplitArray[3].split('').splice(4, escapeSplitArray[3].length).join('');
-      const version = escapeSplitArray[5].split('').splice(4, escapeSplitArray[5].length).join('');
-      const license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
-      const link = nextLineSplitArray[3].split('').splice(5, nextLineSplitArray[3].length - 10).join('');
-
-      const dependecyInfoObject = { name, version, license, link, package };
-
-      let pushToFinalObject = true;
-      let oldMatchingValue = {};
-      dependencyJson.forEach(y => {
-        if (x.trim().toString() === y.name.trim().toString() &&
-          dependency[x].trim().toString() === y.version.trim().toString()) {
-          pushToFinalObject = false;
-          oldMatchingValue = y;
-        }
-      });
+      console.log(Constant.color.blue, `${packageProcessed} : ${eachFileName} - ${dependencyName}@${dependencyVersion}`, Constant.color.reset);
       
-      if (pushToFinalObject) {
-        dependencyJson.push(dependecyInfoObject);
-      } else {
-        oldMatchingValue.package += ` ,${package}`;
+      const isNpmDependency = dependencyVersion.toString().toLowerCase().indexOf('file') < 0;
+      try {
+        if(isNpmDependency) {
+          let pushToFinalObject = true;
+          let oldMatchingValue = {};
+          dependencyJson.forEach(existingDependency => {
+            const existingDependencyName = existingDependency.name;
+            const existingDependencyVersion = existingDependency.version;
+            if (dependencyName === existingDependencyName && dependencyVersion === existingDependencyVersion) {
+              pushToFinalObject = false;
+              oldMatchingValue = existingDependency;
+            }
+          });
+
+          if (pushToFinalObject) {
+            const dependecyInfo = `npm view ${dependencyName}@${dependencyVersion} --silent`;
+            const dependecyInfoString = execSync(dependecyInfo).toString('utf8');
+            const nextLineSplitArray = dependecyInfoString.split('\n');
+            const escapeSplitArray = nextLineSplitArray[1].split('\u001b');
+            let license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
+            if (!license) license = escapeSplitArray[10].split('').splice(4, escapeSplitArray[10].length).join('');
+
+            const urlVersionDependency = `npm view ${dependencyName}@^${dependencyVersion} npm repository.url --silent`;
+            const link = getHttpsUrl(execSync(urlVersionDependency).toString('utf8').trim());
+
+            dependencyJson.push({ name: dependencyName, version: dependencyVersion, license, link, packageName });
+            pushToFinalObject = false;
+          } else {
+            oldMatchingValue.packageName += `, ${packageName}`;
+          }
+        } else {
+          throw Constant.textMessage.invalidNpmDependency;
+        }
+      } catch (err) {
+        dependencyJson.push({ name: dependencyName, version: dependencyVersion, license: 'UNKNOWN', link: 'NA', packageName: 'NA' });
+        console.log(Constant.color.red, Constant.textMessage.npmException + err, Constant.color.reset);
       }
-    } else {
-      dependencyJson.push({ name: x, version: dependency[x], license: 'UNKNOWN', link: 'NA', package });
-    }
-	});
-	
-	return { dependencyJson, packageProcessed };
+    });
+  }
+
+  return { dependencyJson, packageProcessed };
 };
 
 const generateJsonFile = (sortedDependencyJson, outputFileName) => {
   const filePath = path.join('app', 'output', `${outputFileName}${Constant.fileExtension.json}`);
-	const beautifiedFinalJson = JSON.stringify(getNewObject(sortedDependencyJson), null, 4);
-	fs.writeFile(filePath, beautifiedFinalJson, (err) => {
-		if (err) console.log(Constant.color.red, err, Constant.color.reset);
-		console.log(Constant.color.green, Constant.successText.json, Constant.color.reset);
-	});
+  const beautifiedFinalJson = JSON.stringify(getNewObject(sortedDependencyJson), null, 4);
+  fs.writeFile(filePath, beautifiedFinalJson, (err) => {
+    if (err) console.log(Constant.color.red, err, Constant.color.reset);
+    console.log(Constant.color.green, Constant.textMessage.jsonSuccess, Constant.color.reset);
+  });
 };
 
 const generateCsvFile = (sortedDependencyJson, outputFileName) => {
-	try {
+  try {
     const filePath = path.join('app', 'output', `${outputFileName}${Constant.fileExtension.csv}`);
-		const json2csvParser = new Parser({ fields: Constant.csvField });
-		const csvParsedData = json2csvParser.parse(sortedDependencyJson);
-		fs.writeFile(filePath, csvParsedData, (err) => {
-			if (err) console.log(Constant.color.red, err, Constant.color.reset);
-			console.log(Constant.color.green, Constant.successText.json, Constant.color.reset);
-		});
-	} catch (err) {
-		console.log(Constant.color.red, err, Constant.color.reset);
-	}
+    const json2csvParser = new Parser({ fields: Constant.csvField });
+    const csvParsedData = json2csvParser.parse(sortedDependencyJson);
+    fs.writeFile(filePath, csvParsedData, (err) => {
+      if (err) console.log(Constant.color.red, err, Constant.color.reset);
+      console.log(Constant.color.green, Constant.textMessage.csvSuccess, Constant.color.reset);
+    });
+  } catch (err) {
+    console.log(Constant.color.red, err, Constant.color.reset);
+  }
 };
 
-module.exports = { extractDependencyInfo, generateJsonFile, generateCsvFile };
+module.exports = { getInputFileName, extractDependencyInfo, generateJsonFile, generateCsvFile };
