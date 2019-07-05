@@ -62,13 +62,14 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
             dependencyJson.push({ name: dependencyName, version: dependencyVersion, license, link, packageName });
             pushToFinalObject = false;
           } else {
-            oldMatchingValue.packageName += `, ${packageName}`;
+            const packageNameDoesnotExist = oldMatchingValue.packageName.indexOf(packageName) < 0;
+            if (packageNameDoesnotExist) oldMatchingValue.packageName += `, ${packageName}`;
           }
         } else {
           throw Constant.textMessage.invalidNpmDependency;
         }
       } catch (err) {
-        dependencyJson.push({ name: dependencyName, version: dependencyVersion, license: 'UNKNOWN', link: 'NA', packageName: 'NA' });
+        dependencyJson.push({ name: dependencyName, version: dependencyVersion, license: 'UNKNOWN', link: 'NA', packageName });
         console.log(Constant.color.red, Constant.textMessage.npmException + err, Constant.color.reset);
       }
     });
