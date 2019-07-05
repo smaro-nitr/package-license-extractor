@@ -27,19 +27,15 @@ if (Array.isArray(inputFileName) && inputFileName.length > 0) {
       const prodDependency = data && data.dependencies;
       const devDependency = data && data.devDependencies;
 
-      if (prodDependency === Object(prodDependency)) {
-        const prodDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, prodDependency, eachFile, packageName);
-        dependencyJson = prodDependencyInfo.dependencyJson;
-        packageProcessed = prodDependencyInfo.packageProcessed;
-        generateFile = true;
-      }
-
-      if (devDependency === Object(devDependency)) {
-        const devDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, devDependency, eachFile, packageName);
-        dependencyJson = devDependencyInfo.dependencyJson;
-        packageProcessed = devDependencyInfo.packageProcessed;
-        generateFile = true;
-      }
+      const prodDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, prodDependency, eachFile, packageName);
+      dependencyJson = prodDependencyInfo.dependencyJson;
+      packageProcessed = prodDependencyInfo.packageProcessed;
+        
+      const devDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, devDependency, eachFile, packageName);
+      dependencyJson = devDependencyInfo.dependencyJson;
+      packageProcessed = devDependencyInfo.packageProcessed;
+      
+      generateFile = true;
     } catch (err) {
       console.log(Constant.color.red, Constant.textMessage.fileReadException + err, Constant.color.reset);
     }

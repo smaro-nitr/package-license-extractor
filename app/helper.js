@@ -28,7 +28,7 @@ const getHttpsUrl = (link) => {
 const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, dependency, eachFileName, packageName) => {
   const dependencyJson = getNewObject(dependencyInfoInit);
   let packageProcessed = packageProcessedInit;
-  if (dependency) {
+  if (dependency === Object(dependency)) {
     Object.keys(dependency).forEach(dependencyName => {
       const dependencyVersion = dependency[dependencyName];
       packageProcessed++;
@@ -53,7 +53,8 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
             const dependecyInfoString = execSync(dependecyInfo).toString('utf8');
             const nextLineSplitArray = dependecyInfoString.split('\n');
             const escapeSplitArray = nextLineSplitArray[1].split('\u001b');
-            const license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
+            let license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
+            if (!license) license = escapeSplitArray[10].split('').splice(4, escapeSplitArray[10].length).join('');
 
             const urlVersionDependency = `npm view ${dependencyName}@^${dependencyVersion} npm repository.url --silent`;
             const link = getHttpsUrl(execSync(urlVersionDependency).toString('utf8').trim());
