@@ -7,8 +7,23 @@
     "start": "node app/index.js"
   },
   "author": "Subhendu Kumar Sahoo <smaro.nitr@gmail.com>",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "dependencies": {
     "json2csv": "^4.5.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smaro-nitr/npm-license-extractor.git"
+  },
+  "keywords": [
+    "NPM",
+    "Package",
+    "License",
+    "Extraction"
+  ],
+  "bugs": {
+    "url": "https://github.com/smaro-nitr/npm-license-extractor/issues"
+  },
+  "homepage": "https://github.com/smaro-nitr/npm-license-extractor#readme"
 }

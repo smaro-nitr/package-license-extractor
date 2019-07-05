@@ -21,7 +21,7 @@ const getNewObject = (obj) => {
 };
 
 const getHttpsUrl = (link) => {
-  let httpsUrl = Constant.https + link.substring(link.indexOf('github.com'), link.length);
+  let httpsUrl = link ? Constant.https + link.substring(link.indexOf('github.com'), link.length) : 'NA';
   return httpsUrl;
 }
 
