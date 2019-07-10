@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node app/index.js"
   },
+  "bin": {
+    "extract-license": "./cli.js"
+  },
   "author": "Subhendu Kumar Sahoo <smaro.nitr@gmail.com>",
   "license": "MIT",
   "dependencies": {
@@ -17,10 +20,10 @@
     "url": "git+https://github.com/smaro-nitr/npm-license-extractor.git"
   },
   "keywords": [
-    "NPM",
-    "Package",
-    "License",
-    "Extraction"
+    "npm",
+    "package",
+    "license",
+    "extraction"
   ],
   "bugs": {
     "url": "https://github.com/smaro-nitr/npm-license-extractor/issues"
