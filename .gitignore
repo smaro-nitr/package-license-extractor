@@ -1,4 +1,4 @@
+.vscode
 node_modules
-app/input/*
-app/output/*
+extracted_license
 package-lock.json

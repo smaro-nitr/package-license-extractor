@@ -7,7 +7,7 @@
     "start": "node app/index.js"
   },
   "bin": {
-    "extract-license": "./cli.js"
+    "extract-license": "app/index.js"
   },
   "author": "Subhendu Kumar Sahoo <smaro.nitr@gmail.com>",
   "license": "MIT",

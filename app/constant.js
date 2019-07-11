@@ -1,9 +1,9 @@
 const io = {
-	baseFolderName: 'app',
-	inputFolderName: 'input',
-	inputFileName: [],
-	outputFolderName: 'output',
-	outputFileName: 'final'
+	baseFolderName: '',
+	inputFolderName: '',
+	inputFileName: 'package',
+	outputFolderName: 'extracted_license',
+	outputFileName: 'extracted_license'
 };
 
 const color = {
