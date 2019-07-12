@@ -45,7 +45,7 @@ if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
     }
   })
 } else {
-  console.log(Constant.color.red, Constant.textMessage.invalidInputFileName, Constant.color.reset);
+  console.log(Constant.color.red, Constant.textMessage.invalidInputFileName + basePath, Constant.color.reset);
 }
 
 const sortedDependencyJson = dependencyJson.sort((a, b) => { return a.name > b.name ? 1 : -1; });
