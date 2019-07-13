@@ -4,16 +4,27 @@ const path = require('path');
 const { Parser } = require('json2csv');
 const Constant = require('./constant');
 
-const getInputFileName = (dirPath) => {
-  const inputFileName = [];
-
-  fs.readdirSync(dirPath).forEach(filename => {
-    const fileName = path.parse(filename).name;
-    const fileExtension = path.parse(filename).ext;
-    if (fileExtension === Constant.fileExtension.json) inputFileName.push(fileName);
+const getInputFoldersName = (basePath) => {
+  return fs.readdirSync(basePath).filter(fileName => {
+    return !fs.lstatSync(fileName).isFile();
   });
+};
 
-  return inputFileName;
+const getInputFilesPath = (basePath, inputFoldersName) => {
+  const inputFilesPath = [];
+
+  inputFoldersName.forEach(folderName => {
+    const projectPath = path.join(basePath, folderName);
+    fs.readdirSync(projectPath).forEach(file => {
+      const fileName = path.parse(file).name;
+      const fileExtension = path.parse(file).ext;
+      if (fileName === Constant.io.inputFileName && fileExtension === Constant.fileExtension.json) {
+        inputFilesPath.push(path.join(projectPath, file));
+      }
+    });
+  })
+
+  return inputFilesPath;
 }
 
 const getNewObject = (obj) => {
@@ -25,14 +36,14 @@ const getHttpsUrl = (link) => {
   return httpsUrl;
 }
 
-const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, dependency, eachFileName, packageName) => {
+const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, dependency, packageName) => {
   const dependencyJson = getNewObject(dependencyInfoInit);
   let packageProcessed = packageProcessedInit;
   if (dependency === Object(dependency)) {
     Object.keys(dependency).forEach(dependencyName => {
       const dependencyVersion = dependency[dependencyName];
       packageProcessed++;
-      console.log(Constant.color.blue, `${packageProcessed} : ${eachFileName} - ${dependencyName}@${dependencyVersion}`, Constant.color.reset);
+      console.log(Constant.color.blue, `${packageProcessed} : ${dependencyName}@${dependencyVersion}`, Constant.color.reset);
       
       const isNpmDependency = dependencyVersion.toString().toLowerCase().indexOf('file') < 0;
       try {
@@ -78,22 +89,32 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
   return { dependencyJson, packageProcessed };
 };
 
-const generateJsonFile = (sortedDependencyJson, outputFileName) => {
-  const filePath = path.join('app', 'output', `${outputFileName}${Constant.fileExtension.json}`);
+const generateOutputFolder = (basePath, outputFolderName) => {
+  return fs.existsSync(path.join(basePath, outputFolderName)) || fs.mkdirSync(path.join(basePath, outputFolderName));
+};
+
+const generateJsonFile = (sortedDependencyJson, outputFilePath, outputFileName) => {
+  const filePath = path.join(outputFilePath, `${outputFileName}${Constant.fileExtension.json}`);
   const beautifiedFinalJson = JSON.stringify(getNewObject(sortedDependencyJson), null, 4);
   fs.writeFile(filePath, beautifiedFinalJson, (err) => {
-    if (err) console.log(Constant.color.red, err, Constant.color.reset);
+    if (err) {
+      console.log(Constant.color.red, err, Constant.color.reset);
+      return;
+    }
     console.log(Constant.color.green, Constant.textMessage.jsonSuccess, Constant.color.reset);
   });
 };
 
-const generateCsvFile = (sortedDependencyJson, outputFileName) => {
+const generateCsvFile = (sortedDependencyJson, outputFilePath, outputFileName) => {
+  const filePath = path.join(outputFilePath, `${outputFileName}${Constant.fileExtension.csv}`);
   try {
-    const filePath = path.join('app', 'output', `${outputFileName}${Constant.fileExtension.csv}`);
     const json2csvParser = new Parser({ fields: Constant.csvField });
     const csvParsedData = json2csvParser.parse(sortedDependencyJson);
     fs.writeFile(filePath, csvParsedData, (err) => {
-      if (err) console.log(Constant.color.red, err, Constant.color.reset);
+      if (err) {
+        console.log(Constant.color.red, err, Constant.color.reset);
+        return;
+      }
       console.log(Constant.color.green, Constant.textMessage.csvSuccess, Constant.color.reset);
     });
   } catch (err) {
@@ -101,4 +122,13 @@ const generateCsvFile = (sortedDependencyJson, outputFileName) => {
   }
 };
 
-module.exports = { getInputFileName, extractDependencyInfo, generateJsonFile, generateCsvFile };
+const exportModule = { 
+  getInputFoldersName,
+  getInputFilesPath,
+  extractDependencyInfo,
+  generateOutputFolder,
+  generateJsonFile,
+  generateCsvFile 
+};
+
+module.exports = exportModule;

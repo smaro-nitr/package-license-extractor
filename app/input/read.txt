@@ -1,1 +1,0 @@
-place all your package.json in this folder

@@ -1,9 +1,9 @@
 const io = {
-	baseFolderName: 'app',
-	inputFolderName: 'input',
-	inputFileName: [],
-	outputFolderName: 'output',
-	outputFileName: 'final'
+	baseFolderName: '',
+	inputFolderName: '',
+	inputFileName: 'package',
+	outputFolderName: 'extracted_license',
+	outputFileName: 'extracted_license'
 };
 
 const color = {
@@ -29,7 +29,7 @@ const csvField = [
 ];
 
 const textMessage = {
-	invalidInputFileName: 'No package.json file is availiable inside app/input folder',
+	invalidInputFileName: 'No package.json file is availiable in sub folder (project folder) at ',
 	fileReadException: 'File read exception: ',
 	invalidPackageJson: 'Invalid package.json',
 	npmException: 'NPM exception: ',

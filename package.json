@@ -1,10 +1,13 @@
 {
-  "name": "npm-license-extractor",
-  "version": "1.0.0",
-  "description": "extract npm license from package.json",
+  "name": "package-license-extractor",
+  "version": "0.0.0-Beta",
+  "description": "extract package license from project`s package.json",
   "main": "index.js",
   "scripts": {
     "start": "node app/index.js"
+  },
+  "bin": {
+    "extract-license": "app/index.js"
   },
   "author": "Subhendu Kumar Sahoo <smaro.nitr@gmail.com>",
   "license": "MIT",
@@ -17,10 +20,10 @@
     "url": "git+https://github.com/smaro-nitr/npm-license-extractor.git"
   },
   "keywords": [
-    "NPM",
-    "Package",
-    "License",
-    "Extraction"
+    "npm",
+    "package",
+    "license",
+    "extraction"
   ],
   "bugs": {
     "url": "https://github.com/smaro-nitr/npm-license-extractor/issues"
