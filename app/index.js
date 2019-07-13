@@ -2,8 +2,6 @@
 
 const [...args] = process.argv
 
-const path = require('path');
-const fs = require("fs");
 const Helper = require('./helper');
 const Constant = require('./constant');
 
@@ -12,8 +10,8 @@ const basePath = process.cwd();
 const inputFoldersName = Helper.getInputFoldersName(basePath);
 const inputFilesPath = Helper.getInputFilesPath(basePath, inputFoldersName);
 
-const outputFolderName = Constant.io.outputFolderName;
-const outputFileName = Constant.io.outputFileName;
+const outputFolderName = Constant.IO.outputFolderName;
+const outputFileName = Constant.IO.outputFileName;
 
 let generateOutputFile = false;
 
@@ -21,7 +19,7 @@ let packageProcessed = 0;
 let dependencyJson = [];
 if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
   inputFilesPath.forEach(packagePath => {
-    console.log(Constant.color.magenta, `\n>>> processing ${packagePath}`, Constant.color.reset);
+    console.log(Constant.COLOR.magenta, `\n>>> processing ${packagePath}`, Constant.COLOR.reset);
 
     try {
       const data = require(packagePath);
@@ -39,11 +37,11 @@ if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
       
       generateOutputFile = true;
     } catch (err) {
-      console.log(Constant.color.red, Constant.textMessage.fileReadException + err, Constant.color.reset);
+      console.log(Constant.COLOR.red, Constant.MESSAGE.fileReadException + err, Constant.COLOR.reset);
     }
   })
 } else {
-  console.log(Constant.color.red, Constant.textMessage.invalidInputFileName + basePath, Constant.color.reset);
+  console.log(Constant.COLOR.red, Constant.MESSAGE.invalidInputFileName + basePath, Constant.COLOR.reset);
 }
 
 if (generateOutputFile) {
@@ -51,7 +49,6 @@ if (generateOutputFile) {
   console.log('\n');
 
   const sortedDependencyJson = dependencyJson.sort((a, b) => { return a.name > b.name ? 1 : -1; });
-  const outputFilePath = path.join(basePath, outputFolderName);
-  Helper.generateJsonFile(sortedDependencyJson, outputFilePath, outputFileName);
-  Helper.generateCsvFile(sortedDependencyJson, outputFilePath, outputFileName);
+  Helper.generateJsonFile(sortedDependencyJson, basePath, outputFolderName, outputFileName);
+  Helper.generateCsvFile(sortedDependencyJson, basePath, outputFolderName, outputFileName);
 }

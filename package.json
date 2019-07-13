@@ -1,6 +1,6 @@
 {
   "name": "package-license-extractor",
-  "version": "0.0.0-Beta",
+  "version": "0.0.1-Beta",
   "description": "extract package license from project`s package.json",
   "main": "index.js",
   "scripts": {

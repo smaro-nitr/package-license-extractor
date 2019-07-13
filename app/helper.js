@@ -17,8 +17,8 @@ const getInputFilesPath = (basePath, inputFoldersName) => {
     const projectPath = path.join(basePath, folderName);
     fs.readdirSync(projectPath).forEach(file => {
       const fileName = path.parse(file).name;
-      const fileExtension = path.parse(file).ext;
-      if (fileName === Constant.io.inputFileName && fileExtension === Constant.fileExtension.json) {
+      const FILE_EXTENSION = path.parse(file).ext;
+      if (fileName === Constant.IO.inputFileName && FILE_EXTENSION === Constant.FILE_EXTENSION.json) {
         inputFilesPath.push(path.join(projectPath, file));
       }
     });
@@ -32,7 +32,15 @@ const getNewObject = (obj) => {
 };
 
 const getHttpsUrl = (link) => {
-  let httpsUrl = link ? Constant.https + link.substring(link.indexOf('github.com'), link.length) : 'NA';
+  let httpsUrl = 'NA';
+  if (link) {
+    httpsUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length);
+    
+    if (httpsUrl.indexOf('\'') > 0) httpsUrl = httpsUrl.substring(0, httpsUrl.indexOf('\''));
+    if (httpsUrl.indexOf('.git') === (httpsUrl.length - 4)) httpsUrl = httpsUrl.substring(0, httpsUrl.length - 4);
+    
+    httpsUrl += Constant.URL.licensePath;
+  }
   return httpsUrl;
 }
 
@@ -43,7 +51,7 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
     Object.keys(dependency).forEach(dependencyName => {
       const dependencyVersion = dependency[dependencyName];
       packageProcessed++;
-      console.log(Constant.color.blue, `${packageProcessed} : ${dependencyName}@${dependencyVersion}`, Constant.color.reset);
+      console.log(Constant.COLOR.blue, `${packageProcessed} : ${dependencyName}@${dependencyVersion}`, Constant.COLOR.reset);
       
       const isNpmDependency = dependencyVersion.toString().toLowerCase().indexOf('file') < 0;
       try {
@@ -77,11 +85,11 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
             if (packageNameDoesnotExist) oldMatchingValue.packageName += `, ${packageName}`;
           }
         } else {
-          throw Constant.textMessage.invalidNpmDependency;
+          throw Constant.MESSAGE.invalidNpmDependency;
         }
       } catch (err) {
         dependencyJson.push({ name: dependencyName, version: dependencyVersion, license: 'UNKNOWN', link: 'NA', packageName });
-        console.log(Constant.color.red, Constant.textMessage.npmException + err, Constant.color.reset);
+        console.log(Constant.COLOR.red, Constant.MESSAGE.npmException + err, Constant.COLOR.reset);
       }
     });
   }
@@ -93,32 +101,32 @@ const generateOutputFolder = (basePath, outputFolderName) => {
   return fs.existsSync(path.join(basePath, outputFolderName)) || fs.mkdirSync(path.join(basePath, outputFolderName));
 };
 
-const generateJsonFile = (sortedDependencyJson, outputFilePath, outputFileName) => {
-  const filePath = path.join(outputFilePath, `${outputFileName}${Constant.fileExtension.json}`);
+const generateJsonFile = (sortedDependencyJson, outputFilePath, outputFolderName, outputFileName) => {
+  const filePath = path.join(outputFilePath, outputFolderName, `${outputFileName}${Constant.FILE_EXTENSION.json}`);
   const beautifiedFinalJson = JSON.stringify(getNewObject(sortedDependencyJson), null, 4);
   fs.writeFile(filePath, beautifiedFinalJson, (err) => {
     if (err) {
-      console.log(Constant.color.red, err, Constant.color.reset);
+      console.log(Constant.COLOR.red, err, Constant.COLOR.reset);
       return;
     }
-    console.log(Constant.color.green, Constant.textMessage.jsonSuccess, Constant.color.reset);
+    console.log(Constant.COLOR.green, Constant.MESSAGE.jsonSuccess, Constant.COLOR.reset);
   });
 };
 
-const generateCsvFile = (sortedDependencyJson, outputFilePath, outputFileName) => {
-  const filePath = path.join(outputFilePath, `${outputFileName}${Constant.fileExtension.csv}`);
+const generateCsvFile = (sortedDependencyJson, outputFilePath, outputFolderName, outputFileName) => {
+  const filePath = path.join(outputFilePath, outputFolderName, `${outputFileName}${Constant.FILE_EXTENSION.csv}`);
   try {
-    const json2csvParser = new Parser({ fields: Constant.csvField });
+    const json2csvParser = new Parser({ fields: Constant.CSV_FIELD });
     const csvParsedData = json2csvParser.parse(sortedDependencyJson);
     fs.writeFile(filePath, csvParsedData, (err) => {
       if (err) {
-        console.log(Constant.color.red, err, Constant.color.reset);
+        console.log(Constant.COLOR.red, err, Constant.COLOR.reset);
         return;
       }
-      console.log(Constant.color.green, Constant.textMessage.csvSuccess, Constant.color.reset);
+      console.log(Constant.COLOR.green, Constant.MESSAGE.csvSuccess, Constant.COLOR.reset);
     });
   } catch (err) {
-    console.log(Constant.color.red, err, Constant.color.reset);
+    console.log(Constant.COLOR.red, err, Constant.COLOR.reset);
   }
 };
 
