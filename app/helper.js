@@ -4,6 +4,12 @@ const path = require('path');
 const { Parser } = require('json2csv');
 const Constant = require('./constant');
 
+const getInputFoldersName = (basePath) => {
+  return fs.readdirSync(basePath).filter(fileName => {
+    return !fs.lstatSync(fileName).isFile();
+  });
+};
+
 const getInputFilesPath = (basePath, inputFoldersName) => {
   const inputFilesPath = [];
 
@@ -83,6 +89,10 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
   return { dependencyJson, packageProcessed };
 };
 
+const generateOutputFolder = (basePath, outputFolderName) => {
+  return fs.existsSync(path.join(basePath, outputFolderName)) || fs.mkdirSync(path.join(basePath, outputFolderName));
+};
+
 const generateJsonFile = (sortedDependencyJson, outputFilePath, outputFileName) => {
   const filePath = path.join(outputFilePath, `${outputFileName}${Constant.fileExtension.json}`);
   const beautifiedFinalJson = JSON.stringify(getNewObject(sortedDependencyJson), null, 4);
@@ -112,4 +122,13 @@ const generateCsvFile = (sortedDependencyJson, outputFilePath, outputFileName) =
   }
 };
 
-module.exports = { getInputFilesPath, extractDependencyInfo, generateJsonFile, generateCsvFile };
+const exportModule = { 
+  getInputFoldersName,
+  getInputFilesPath,
+  extractDependencyInfo,
+  generateOutputFolder,
+  generateJsonFile,
+  generateCsvFile 
+};
+
+module.exports = exportModule;

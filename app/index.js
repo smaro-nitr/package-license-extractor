@@ -9,18 +9,16 @@ const Constant = require('./constant');
 
 const basePath = process.cwd();
 
-const inputFoldersName = fs.readdirSync(process.cwd()).filter(fileName => {
-  return !fs.lstatSync(fileName).isFile();
-});
+const inputFoldersName = Helper.getInputFoldersName(basePath);
 const inputFilesPath = Helper.getInputFilesPath(basePath, inputFoldersName);
 
 const outputFolderName = Constant.io.outputFolderName;
 const outputFileName = Constant.io.outputFileName;
-(() => fs.existsSync(path.join(basePath, outputFolderName)) || fs.mkdirSync(path.join(basePath, outputFolderName)))();
+
+let generateOutputFile = false;
 
 let packageProcessed = 0;
 let dependencyJson = [];
-let generateFile = false;
 if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
   inputFilesPath.forEach(packagePath => {
     console.log(Constant.color.magenta, `\n>>> processing ${packagePath}`, Constant.color.reset);
@@ -39,7 +37,7 @@ if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
       dependencyJson = devDependencyInfo.dependencyJson;
       packageProcessed = devDependencyInfo.packageProcessed;
       
-      generateFile = true;
+      generateOutputFile = true;
     } catch (err) {
       console.log(Constant.color.red, Constant.textMessage.fileReadException + err, Constant.color.reset);
     }
@@ -48,9 +46,12 @@ if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
   console.log(Constant.color.red, Constant.textMessage.invalidInputFileName + basePath, Constant.color.reset);
 }
 
-const sortedDependencyJson = dependencyJson.sort((a, b) => { return a.name > b.name ? 1 : -1; });
+if (generateOutputFile) {
+  Helper.generateOutputFolder(basePath, outputFolderName);
+  console.log('\n');
 
-generateFile && console.log('\n');
-const outputFilePath = path.join(basePath, outputFolderName);
-generateFile && Helper.generateJsonFile(sortedDependencyJson, outputFilePath, outputFileName);
-generateFile && Helper.generateCsvFile(sortedDependencyJson, outputFilePath, outputFileName);
+  const sortedDependencyJson = dependencyJson.sort((a, b) => { return a.name > b.name ? 1 : -1; });
+  const outputFilePath = path.join(basePath, outputFolderName);
+  Helper.generateJsonFile(sortedDependencyJson, outputFilePath, outputFileName);
+  Helper.generateCsvFile(sortedDependencyJson, outputFilePath, outputFileName);
+}
