@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
-const [...args] = process.argv
-
 const Helper = require('./helper');
 const Constant = require('./constant');
 
+const [...args] = process.argv;
+const customArgs = Helper.getCustomArgs(args);
+const projectScanType = customArgs.projectScanType;
+
 const basePath = process.cwd();
 
-const inputFoldersName = Helper.getInputFoldersName(basePath);
+const inputFoldersName = Helper.getInputFoldersName(basePath, projectScanType);
 const inputFilesPath = Helper.getInputFilesPath(basePath, inputFoldersName);
 
 const outputFolderName = Constant.IO.outputFolderName;
@@ -30,18 +32,18 @@ if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
       const prodDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, prodDependency, packageName);
       dependencyJson = prodDependencyInfo.dependencyJson;
       packageProcessed = prodDependencyInfo.packageProcessed;
-        
+
       const devDependencyInfo = Helper.extractDependencyInfo(dependencyJson, packageProcessed, devDependency, packageName);
       dependencyJson = devDependencyInfo.dependencyJson;
       packageProcessed = devDependencyInfo.packageProcessed;
-      
+
       generateOutputFile = true;
     } catch (err) {
       console.log(Constant.COLOR.red, Constant.MESSAGE.fileReadException + err, Constant.COLOR.reset);
     }
   })
 } else {
-  console.log(Constant.COLOR.red, Constant.MESSAGE.invalidInputFileName + basePath, Constant.COLOR.reset);
+  console.log(Constant.COLOR.red, Constant.MESSAGE.invalidInputFileName, Constant.COLOR.reset);
 }
 
 if (generateOutputFile) {
