@@ -4,10 +4,34 @@ const path = require('path');
 const { Parser } = require('json2csv');
 const Constant = require('./constant');
 
-const getInputFoldersName = (basePath) => {
-  return fs.readdirSync(basePath).filter(fileName => {
-    return !fs.lstatSync(fileName).isFile();
+const getCustomArgs = (args) => {
+  const customArgs = {};
+
+  Array.isArray(args) && args.forEach(eachArg => {
+    const customArgEqualToIndex = eachArg.indexOf('=');
+    const removeCustomArgFlagNotion = eachArg.replace(/^--+/i, '');
+    if (customArgEqualToIndex > 0 && removeCustomArgFlagNotion) {
+      const argsKey = eachArg.substring(2, customArgEqualToIndex);
+      const argsValue = eachArg.substring(customArgEqualToIndex + 1, eachArg.length);
+      customArgs[argsKey] = argsValue;
+    }
   });
+
+  return customArgs;
+};
+
+const getInputFoldersName = (basePath, projectScanType) => {
+  let inputFoldersName = [];
+
+  if (projectScanType === Constant.ARGS.projectScanType[1]) {
+    inputFoldersName = fs.readdirSync(basePath).filter(fileName => {
+      return !fs.lstatSync(fileName).isFile();
+    });
+  } else {
+    inputFoldersName.push('');
+  }
+
+  return inputFoldersName;
 };
 
 const getInputFilesPath = (basePath, inputFoldersName) => {
@@ -22,7 +46,7 @@ const getInputFilesPath = (basePath, inputFoldersName) => {
         inputFilesPath.push(path.join(projectPath, file));
       }
     });
-  })
+  });
 
   return inputFilesPath;
 }
@@ -35,10 +59,10 @@ const getHttpsUrl = (link) => {
   let httpsUrl = 'NA';
   if (link) {
     httpsUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length);
-    
+
     if (httpsUrl.indexOf('\'') > 0) httpsUrl = httpsUrl.substring(0, httpsUrl.indexOf('\''));
     if (httpsUrl.indexOf('.git') === (httpsUrl.length - 4)) httpsUrl = httpsUrl.substring(0, httpsUrl.length - 4);
-    
+
     httpsUrl += Constant.URL.licensePath;
   }
   return httpsUrl;
@@ -52,10 +76,10 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
       const dependencyVersion = dependency[dependencyName];
       packageProcessed++;
       console.log(Constant.COLOR.blue, `${packageProcessed} : ${dependencyName}@${dependencyVersion}`, Constant.COLOR.reset);
-      
+
       const isNpmDependency = dependencyVersion.toString().toLowerCase().indexOf('file') < 0;
       try {
-        if(isNpmDependency) {
+        if (isNpmDependency) {
           let pushToFinalObject = true;
           let oldMatchingValue = {};
           dependencyJson.forEach(existingDependency => {
@@ -130,13 +154,14 @@ const generateCsvFile = (sortedDependencyJson, outputFilePath, outputFolderName,
   }
 };
 
-const exportModule = { 
+const exportModule = {
+  getCustomArgs,
   getInputFoldersName,
   getInputFilesPath,
   extractDependencyInfo,
   generateOutputFolder,
   generateJsonFile,
-  generateCsvFile 
+  generateCsvFile
 };
 
 module.exports = exportModule;

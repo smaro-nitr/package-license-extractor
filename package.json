@@ -17,7 +17,7 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/smaro-nitr/npm-license-extractor.git"
+    "url": "git+https://github.com/smaro-nitr/package-license-extractor.git"
   },
   "keywords": [
     "npm",
@@ -26,7 +26,7 @@
     "extraction"
   ],
   "bugs": {
-    "url": "https://github.com/smaro-nitr/npm-license-extractor/issues"
+    "url": "https://github.com/smaro-nitr/package-license-extractor/issues"
   },
-  "homepage": "https://github.com/smaro-nitr/npm-license-extractor#readme"
+  "homepage": "https://github.com/smaro-nitr/package-license-extractor#readme"
 }
