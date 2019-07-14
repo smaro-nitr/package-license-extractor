@@ -28,7 +28,7 @@ const getInputFoldersName = (basePath, projectScanType) => {
       return !fs.lstatSync(fileName).isFile();
     });
   } else {
-    inputFoldersName = [''];
+    inputFoldersName.push('');
   }
 
   return inputFoldersName;
