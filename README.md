@@ -1,12 +1,16 @@
 # package-license-extractor
 
 ## About
-To find the license of all npm dependency used in your project. Henceforth avoiding all legal challenges ahead.
+To find the license of all npm dependency used in your project.
+<br/>Henceforth avoiding all legal challenges ahead, that may arises out of license conflict.
 
-Advantages:
+Feature:
 * It doesn`t require node_modules to extract package's license details.
-* All dependency with similar name and version are merged together.
+* All dependency with similar name and version are merged together (duplication avoided).
 * Doesn`t need to be installed along with your project dependency.
+* Fetch actual license URL from repository (if availiable), else provide repository URL.
+
+Learn more on license: https://opensource.org/licenses
 <br/>&nbsp;
 
 ## Installation
@@ -14,23 +18,19 @@ Global installation
 ```shell
 npm install package-license-extractor -g
 ```
-Note: Doesn`t required to be installed in your project
+Note: Doesn`t required to be installed as a dependency in your project
 <br/>&nbsp;
 
 ## Flags Available
 <table>
   <tr>
     <td>Flag</td>
-    <td>&nbsp;</td>
     <td>Possible Value</td>
-    <td>&nbsp;</td>
     <td>Default Value</td>
   <tr>
   <tr>
     <td><b>--projectScanType</b></td>
-    <td>&nbsp;</td>
     <td>multi, single</td>
-    <td>&nbsp;</td>
     <td>single</td>
   </tr>
 </table>
@@ -50,14 +50,15 @@ extract-license --projectScanType=multi
 ```
 
 Example (multiple project):
-<br/>- Folder Structure: C > My_All_Projects > Project_One, Project_Two, So on ..
-<br/>- Run the command in My_All_Projects folder to get the license detail of Project_One, Project_Two, So on ..
+* Folder Structure: C > All_Projects > Project_One, Project_Two, So on ..
+* Run the command in All_Projects folder to get the license detail of Project_One, Project_Two, So on ..
 <br/>&nbsp;
 
 ## Output
 * Find the output in a newly created folder "extracted_license".
 * Output will be in CSV as well as JSON format.
-* Output will have following field: name, version, licencse, license url, package name (sorted by name).
+* Output will have following field: name, version, licencse, url type, url, package name (sorted by name).
+* In console, you will get processed package`s summary detail.
 <br/>&nbsp;
 
 ## Note

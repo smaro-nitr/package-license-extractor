@@ -2,6 +2,8 @@ const execSync = require('child_process').execSync;
 const fs = require('fs');
 const path = require('path');
 const { Parser } = require('json2csv');
+const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+
 const Constant = require('./constant');
 
 const getCustomArgs = (args) => {
@@ -55,17 +57,35 @@ const getNewObject = (obj) => {
   return JSON.parse(JSON.stringify(obj));
 };
 
-const getHttpsUrl = (link) => {
-  let httpsUrl = 'NA';
+const isValidUrl = (link) => {
+  console.log(Constant.COLOR.cyan, `${Constant.MESSAGE.validatingUrl}${link}`, Constant.COLOR.reset);
+  const request = new XMLHttpRequest();
+  request.open('GET', link, false);
+  request.send(null);
+  if (request.status === 200) return true;
+  return false;
+};
+
+const getLinkDetail = (link) => {
+  let linkDetail = { type: 'UNKNOWN', url: 'NA' };
   if (link) {
-    httpsUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length);
+    let repositoryUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length);
+    if (repositoryUrl.indexOf('\'') > 0)
+      repositoryUrl = repositoryUrl.substring(0, repositoryUrl.indexOf('\''));
+    if (repositoryUrl.indexOf('.git') === (repositoryUrl.length - 4))
+      repositoryUrl = repositoryUrl.substring(0, repositoryUrl.length - 4);
 
-    if (httpsUrl.indexOf('\'') > 0) httpsUrl = httpsUrl.substring(0, httpsUrl.indexOf('\''));
-    if (httpsUrl.indexOf('.git') === (httpsUrl.length - 4)) httpsUrl = httpsUrl.substring(0, httpsUrl.length - 4);
+    const licenseUrl = repositoryUrl + Constant.URL.licensePath;
 
-    httpsUrl += Constant.URL.licensePath;
+    if (isValidUrl(licenseUrl)) {
+      linkDetail.url = licenseUrl;
+      linkDetail.type = Constant.URL.licenseType.license;
+    } else if (isValidUrl(repositoryUrl)) {
+      linkDetail.url = repositoryUrl;
+      linkDetail.type = Constant.URL.licenseType.repository;
+    }
   }
-  return httpsUrl;
+  return linkDetail;
 }
 
 const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, dependency, packageName) => {
@@ -75,7 +95,7 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
     Object.keys(dependency).forEach(dependencyName => {
       const dependencyVersion = dependency[dependencyName];
       packageProcessed++;
-      console.log(Constant.COLOR.blue, `${packageProcessed} : ${dependencyName}@${dependencyVersion}`, Constant.COLOR.reset);
+      console.log(Constant.COLOR.blue, `${packageProcessed}: ${dependencyName}@${dependencyVersion}`, Constant.COLOR.reset);
 
       const isNpmDependency = dependencyVersion.toString().toLowerCase().indexOf('file') < 0;
       try {
@@ -100,9 +120,11 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
             if (!license) license = escapeSplitArray[10].split('').splice(4, escapeSplitArray[10].length).join('');
 
             const urlVersionDependency = `npm view ${dependencyName}@^${dependencyVersion} npm repository.url --silent`;
-            const link = getHttpsUrl(execSync(urlVersionDependency).toString('utf8').trim());
+            const linkDetail = getLinkDetail(execSync(urlVersionDependency).toString('utf8').trim());
+            const linkType = linkDetail.type;
+            const linkUrl = linkDetail.url;
 
-            dependencyJson.push({ name: dependencyName, version: dependencyVersion, license, link, packageName });
+            dependencyJson.push({ name: dependencyName, version: dependencyVersion, license, linkType, linkUrl, packageName });
             pushToFinalObject = false;
           } else {
             const packageNameDoesnotExist = oldMatchingValue.packageName.indexOf(packageName) < 0;
@@ -112,7 +134,7 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
           throw Constant.MESSAGE.invalidNpmDependency;
         }
       } catch (err) {
-        dependencyJson.push({ name: dependencyName, version: dependencyVersion, license: 'UNKNOWN', link: 'NA', packageName });
+        dependencyJson.push({ name: dependencyName, version: dependencyVersion, license: 'UNKNOWN', linkType:'UNKNOWN', linkUrl: 'NA', packageName });
         console.log(Constant.COLOR.red, Constant.MESSAGE.npmException + err, Constant.COLOR.reset);
       }
     });
