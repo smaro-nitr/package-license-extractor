@@ -21,7 +21,7 @@ let packageProcessed = 0;
 let dependencyJson = [];
 if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
   inputFilesPath.forEach(packagePath => {
-    console.log(Constant.COLOR.magenta, `\n>>> processing ${packagePath}`, Constant.COLOR.reset);
+    console.log(Constant.COLOR.magenta, `\n${Constant.MESSAGE.processingPackage} ${packagePath}`, Constant.COLOR.reset);
 
     try {
       const data = require(packagePath);
@@ -51,6 +51,12 @@ if (generateOutputFile) {
   console.log('\n');
 
   const sortedDependencyJson = dependencyJson.sort((a, b) => { return a.name > b.name ? 1 : -1; });
+  
+  console.log(Constant.COLOR.yellow, `${Constant.MESSAGE.uniquePackage} ${sortedDependencyJson.length}`, Constant.COLOR.reset);
+  console.log(Constant.COLOR.yellow, `${Constant.MESSAGE.similarPackage} ${packageProcessed - sortedDependencyJson.length}`, Constant.COLOR.reset);
+  console.log(Constant.COLOR.yellow, `${Constant.MESSAGE.totalPackage} ${packageProcessed}`, Constant.COLOR.reset);
+  console.log('\n');
+
   Helper.generateJsonFile(sortedDependencyJson, basePath, outputFolderName, outputFileName);
   Helper.generateCsvFile(sortedDependencyJson, basePath, outputFolderName, outputFileName);
 }
