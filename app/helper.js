@@ -89,7 +89,7 @@ const getLinkDetail = (link, latestVersionLink, version) => {
     }
     else if (isValidUrl(urlInfoObject.npmFetchUrl)) {
       linkDetail.url = urlInfoObject.npmFetchUrl;
-      linkDetail.type = Constant.URL.licenseType.npmUrl;
+      linkDetail.type = Constant.URL.licenseType.registry;
     }
   }
   return linkDetail;

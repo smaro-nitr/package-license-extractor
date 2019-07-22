@@ -56,11 +56,11 @@ const URL = {
   npmPackageUrl: 'www.npmjs.com/package/fetch/v/',
   licensePath: '/blob/master/LICENSE',
   licenseType: {
-    license: 'license',
-    repository: 'repository',
-    latestLicence : 'latest version licence',
-    latestRepository : 'latest version repository',
-    npmUrl: 'NPM fetch'
+    license: 'exact-version-license',
+    repository: 'exact-version-repository',
+    registry: 'exact-version-registry',
+    latestLicence : 'latest-version-license',
+    latestRepository : 'latest-version-repository'
   }
 };
 
