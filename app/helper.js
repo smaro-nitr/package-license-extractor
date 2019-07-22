@@ -58,7 +58,7 @@ const getNewObject = (obj) => {
 };
 
 const isValidUrl = (link) => {
-  console.log(Constant.COLOR.cyan, `${Constant.MESSAGE.validatingUrl}${link}`, Constant.COLOR.reset);
+  console.log(Constant.COLOR.dim, Constant.COLOR.cyan, `${Constant.MESSAGE.validatingUrl}${link}`, Constant.COLOR.reset);
   const request = new XMLHttpRequest();
   request.open('GET', link, false);
   request.send(null);
@@ -88,6 +88,13 @@ const getLinkDetail = (link) => {
   return linkDetail;
 }
 
+const getExactDependecyVersion = (dependencyVersion) => {
+  if (dependencyVersion.indexOf('^') === 0 || dependencyVersion.indexOf('~') === 0) {
+    return dependencyVersion.substring(1, dependencyVersion.length);
+  }
+  return dependencyVersion;
+}
+
 const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, dependency, packageName) => {
   const dependencyJson = getNewObject(dependencyInfoInit);
   let packageProcessed = packageProcessedInit;
@@ -95,7 +102,7 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
     Object.keys(dependency).forEach(dependencyName => {
       const dependencyVersion = dependency[dependencyName];
       packageProcessed++;
-      console.log(Constant.COLOR.blue, `${packageProcessed}: ${dependencyName}@${dependencyVersion}`, Constant.COLOR.reset);
+      console.log(Constant.COLOR.cyan, `${packageProcessed}: ${dependencyName}@${dependencyVersion}`, Constant.COLOR.reset);
 
       const isNpmDependency = dependencyVersion.toString().toLowerCase().indexOf('file') < 0;
       try {
@@ -119,7 +126,8 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
             let license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
             if (!license) license = escapeSplitArray[10].split('').splice(4, escapeSplitArray[10].length).join('');
 
-            const urlVersionDependency = `npm view ${dependencyName}@^${dependencyVersion} npm repository.url --silent`;
+            const exactDependencyVersion = getExactDependecyVersion(dependencyVersion);
+            const urlVersionDependency = `npm view ${dependencyName}@${dependencyVersion} npm repository.url --silent`;
             const linkDetail = getLinkDetail(execSync(urlVersionDependency).toString('utf8').trim());
             const linkType = linkDetail.type;
             const linkUrl = linkDetail.url;
