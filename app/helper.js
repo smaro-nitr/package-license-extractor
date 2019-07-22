@@ -66,26 +66,53 @@ const isValidUrl = (link) => {
   return false;
 };
 
-const getLinkDetail = (link) => {
+const getLinkDetail = (link, latestVersionLink, version) => {
   let linkDetail = { type: 'UNKNOWN', url: 'NA' };
-  if (link) {
-    let repositoryUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length);
-    if (repositoryUrl.indexOf('\'') > 0)
-      repositoryUrl = repositoryUrl.substring(0, repositoryUrl.indexOf('\''));
-    if (repositoryUrl.indexOf('.git') === (repositoryUrl.length - 4))
-      repositoryUrl = repositoryUrl.substring(0, repositoryUrl.length - 4);
-
-    const licenseUrl = repositoryUrl + Constant.URL.licensePath;
-
-    if (isValidUrl(licenseUrl)) {
-      linkDetail.url = licenseUrl;
+  if (link || latestVersionLink) {
+    const urlInfoObject = getUrlInfo(link, latestVersionLink, version);
+    
+    if (isValidUrl(urlInfoObject.licenseUrl)) {
+      linkDetail.url = urlInfoObject.licenseUrl;
       linkDetail.type = Constant.URL.licenseType.license;
-    } else if (isValidUrl(repositoryUrl)) {
-      linkDetail.url = repositoryUrl;
+    } 
+    else if(isValidUrl(urlInfoObject.latestVersionLicenceUrl)) {
+      linkDetail.url = urlInfoObject.latestVersionLicenceUrl;
+      linkDetail.type = Constant.URL.licenseType.latestLicence;
+    }
+    else if (isValidUrl(urlInfoObject.repositoryUrl)) {
+      linkDetail.url = urlInfoObject.repositoryUrl;
       linkDetail.type = Constant.URL.licenseType.repository;
+    }
+    else if (isValidUrl(urlInfoObject.repositoryLatestVersionUrl)) {
+      linkDetail.url = urlInfoObject.repositoryLatestVersionUrl;
+      linkDetail.type = Constant.URL.licenseType.latestRepository;
+    }
+    else if (isValidUrl(urlInfoObject.npmFetchUrl)) {
+      linkDetail.url = urlInfoObject.npmFetchUrl;
+      linkDetail.type = Constant.URL.licenseType.npmUrl;
     }
   }
   return linkDetail;
+}
+
+const getUrlInfo = (link, latestVersionLink, version) => {
+  let repositoryUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length);
+  let repositoryLatestVersionUrl = Constant.URL.https + latestVersionLink.substring(latestVersionLink.indexOf('github.com'), latestVersionLink.length);
+  let npmFetchUrl = Constant.URL.https + Constant.URL.npmPackageUrl + version;
+  repositoryUrl = fetchSubString(repositoryUrl);
+  repositoryLatestVersionUrl = fetchSubString(repositoryLatestVersionUrl);
+  const licenseUrl = repositoryUrl + Constant.URL.licensePath;
+  const latestVersionLicenceUrl = repositoryLatestVersionUrl + Constant.URL.licensePath;
+
+  return { repositoryUrl, repositoryLatestVersionUrl, licenseUrl, latestVersionLicenceUrl, npmFetchUrl };
+}
+
+const fetchSubString = (url) => {
+  if (url.indexOf('\'') > 0)
+    url = url.substring(0, url.indexOf('\''));
+  if (url.indexOf('.git') === (url.length - 4))
+    url = url.substring(0, url.length - 4);
+  return url;  
 }
 
 const getExactDependecyVersion = (dependencyVersion) => {
@@ -127,8 +154,9 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
             if (!license) license = escapeSplitArray[10].split('').splice(4, escapeSplitArray[10].length).join('');
 
             const exactDependencyVersion = getExactDependecyVersion(dependencyVersion);
-            const urlVersionDependency = `npm view ${dependencyName}@${dependencyVersion} npm repository.url --silent`;
-            const linkDetail = getLinkDetail(execSync(urlVersionDependency).toString('utf8').trim());
+            const urlVersionDependency = `npm view ${dependencyName}@${exactDependencyVersion} npm repository.url --silent`;
+            const urlLatestVersionDependency = `npm view ${dependencyName} npm repository.url --silent`;
+            const linkDetail = getLinkDetail(execSync(urlVersionDependency).toString('utf8').trim(),execSync(urlLatestVersionDependency).toString('utf8').trim(),dependencyVersion);
             const linkType = linkDetail.type;
             const linkUrl = linkDetail.url;
 

@@ -53,10 +53,14 @@ const MESSAGE = {
 
 const URL = {
   https: 'https://',
+  npmPackageUrl: 'www.npmjs.com/package/fetch/v/',
   licensePath: '/blob/master/LICENSE',
   licenseType: {
     license: 'license',
-    repository: 'repository'
+    repository: 'repository',
+    latestLicence : 'latest version licence',
+    latestRepository : 'latest version repository',
+    npmUrl: 'NPM fetch'
   }
 };
 
