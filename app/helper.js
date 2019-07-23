@@ -57,6 +57,15 @@ const getNewObject = (obj) => {
   return JSON.parse(JSON.stringify(obj));
 };
 
+const getRepositoryUrl = (link) => {
+  let repositoryUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length);
+  if (repositoryUrl.indexOf('\'') > 0)
+    repositoryUrl = repositoryUrl.substring(0, repositoryUrl.indexOf('\''));
+  if (repositoryUrl.indexOf('.git') === (repositoryUrl.length - 4))
+    repositoryUrl = repositoryUrl.substring(0, repositoryUrl.length - 4);
+  return repositoryUrl;
+};
+
 const isValidUrl = (link) => {
   console.log(Constant.COLOR.dim, Constant.COLOR.cyan, `${Constant.MESSAGE.validatingUrl}${link}`, Constant.COLOR.reset);
   const request = new XMLHttpRequest();
@@ -66,23 +75,46 @@ const isValidUrl = (link) => {
   return false;
 };
 
-const getLinkDetail = (link) => {
+const getLinkDetail = (dependencyName, exactDependencyVersion) => {
+  const exactVersionDependency = `npm view ${dependencyName}@${exactDependencyVersion} npm repository.url --silent`;
+  const exactVersionLink = execSync(exactVersionDependency).toString('utf8').trim();
+
+  const latestVersionDependency = `npm view ${dependencyName} npm repository.url --silent`;
+  const latestVersionLink = execSync(latestVersionDependency).toString('utf8').trim();
+
   let linkDetail = { type: 'UNKNOWN', url: 'NA' };
-  if (link) {
-    let repositoryUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length);
-    if (repositoryUrl.indexOf('\'') > 0)
-      repositoryUrl = repositoryUrl.substring(0, repositoryUrl.indexOf('\''));
-    if (repositoryUrl.indexOf('.git') === (repositoryUrl.length - 4))
-      repositoryUrl = repositoryUrl.substring(0, repositoryUrl.length - 4);
+  if (exactVersionLink || latestVersionLink) {
+    const exactVersionRepositoryUrl = getRepositoryUrl(exactVersionLink);
+    const exactVersionLicenseUrl = exactVersionRepositoryUrl + Constant.URL.licensePath;
+    const exactVersionLicenseUrlWithMdExtension = exactVersionRepositoryUrl + Constant.URL.licensePathWithMdExtension;
 
-    const licenseUrl = repositoryUrl + Constant.URL.licensePath;
+    const latestVersionRepositoryUrl = getRepositoryUrl(latestVersionLink);
+    const latestVersionLicenseUrl = latestVersionRepositoryUrl + Constant.URL.licensePath;
+    const latestVersionLicenseUrlWithMdExtension = latestVersionRepositoryUrl + Constant.URL.licensePathWithMdExtension;
 
-    if (isValidUrl(licenseUrl)) {
-      linkDetail.url = licenseUrl;
+    const registryUrl = Constant.URL.https + Constant.URL.npmRegistry + dependencyName + '/v/' + exactDependencyVersion;
+
+    if (isValidUrl(exactVersionLicenseUrl)) {
+      linkDetail.url = exactVersionLicenseUrl;
       linkDetail.type = Constant.URL.licenseType.license;
-    } else if (isValidUrl(repositoryUrl)) {
-      linkDetail.url = repositoryUrl;
+    } else if (isValidUrl(exactVersionLicenseUrlWithMdExtension)) {
+      linkDetail.url = exactVersionLicenseUrlWithMdExtension;
+      linkDetail.type = Constant.URL.licenseType.license;
+    } else if (isValidUrl(latestVersionLicenseUrl)) {
+      linkDetail.url = latestVersionLicenseUrl;
+      linkDetail.type = Constant.URL.licenseType.latestLicense;
+    } else if (isValidUrl(latestVersionLicenseUrlWithMdExtension)) {
+      linkDetail.url = latestVersionLicenseUrlWithMdExtension;
+      linkDetail.type = Constant.URL.licenseType.latestLicense;
+    } else if (isValidUrl(exactVersionRepositoryUrl)) {
+      linkDetail.url = exactVersionRepositoryUrl;
       linkDetail.type = Constant.URL.licenseType.repository;
+    } else if (isValidUrl(latestVersionRepositoryUrl)) {
+      linkDetail.url = latestVersionRepositoryUrl;
+      linkDetail.type = Constant.URL.licenseType.latestRepository;
+    } else if (isValidUrl(registryUrl)) {
+      linkDetail.url = registryUrl;
+      linkDetail.type = Constant.URL.licenseType.registry;
     }
   }
   return linkDetail;
@@ -93,6 +125,16 @@ const getExactDependecyVersion = (dependencyVersion) => {
     return dependencyVersion.substring(1, dependencyVersion.length);
   }
   return dependencyVersion;
+}
+
+const getDependencyLicense = (dependencyName, dependencyVersion) => {
+  const dependecyInfo = `npm view ${dependencyName}@${dependencyVersion} --silent`;
+  const dependecyInfoString = execSync(dependecyInfo).toString('utf8');
+  const nextLineSplitArray = dependecyInfoString.split('\n');
+  const escapeSplitArray = nextLineSplitArray[1].split('\u001b');
+  let license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
+  if (!license) license = escapeSplitArray[10].split('').splice(4, escapeSplitArray[10].length).join('');
+  return license
 }
 
 const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, dependency, packageName) => {
@@ -119,16 +161,10 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
           });
 
           if (pushToFinalObject) {
-            const dependecyInfo = `npm view ${dependencyName}@${dependencyVersion} --silent`;
-            const dependecyInfoString = execSync(dependecyInfo).toString('utf8');
-            const nextLineSplitArray = dependecyInfoString.split('\n');
-            const escapeSplitArray = nextLineSplitArray[1].split('\u001b');
-            let license = escapeSplitArray[9].split('').splice(4, escapeSplitArray[9].length).join('');
-            if (!license) license = escapeSplitArray[10].split('').splice(4, escapeSplitArray[10].length).join('');
-
             const exactDependencyVersion = getExactDependecyVersion(dependencyVersion);
-            const urlVersionDependency = `npm view ${dependencyName}@${dependencyVersion} npm repository.url --silent`;
-            const linkDetail = getLinkDetail(execSync(urlVersionDependency).toString('utf8').trim());
+
+            const license = getDependencyLicense(dependencyName, exactDependencyVersion);
+            const linkDetail = getLinkDetail(dependencyName, exactDependencyVersion);
             const linkType = linkDetail.type;
             const linkUrl = linkDetail.url;
 

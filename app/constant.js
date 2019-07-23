@@ -48,15 +48,20 @@ const MESSAGE = {
   similarPackage: 'Similar package(s):',
   totalPackage: 'Total package(s):',
   uniquePackage: 'Unique package(s):',
-  validatingUrl: 'validating ... ', 
+  validatingUrl: 'validating... ', 
 };
 
 const URL = {
   https: 'https://',
+  npmRegistry: 'www.npmjs.com/package/',
   licensePath: '/blob/master/LICENSE',
+  licensePathWithMdExtension: '/blob/master/LICENSE.md',
   licenseType: {
-    license: 'license',
-    repository: 'repository'
+    license: 'exact-version-license',
+    repository: 'exact-version-repository',
+    registry: 'exact-version-registry',
+    latestLicense : 'latest-version-license',
+    latestRepository : 'latest-version-repository'
   }
 };
 
