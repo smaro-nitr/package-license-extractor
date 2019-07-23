@@ -60,11 +60,11 @@ Example (multiple project):
 * Output will have following field: name, version, licencse, url type, url, package name (sorted by name).
 * In console, you will get processed package`s summary detail.
 * Output's url type keyword meaning to its corresponding url are as follows -
-> <b>exact-version-license</b>: Url will take you to exact version license file <br/>
-> <b>latest-version-license</b>: Url will take you to latest version license file <br/>
-> <b>exact-version-repository</b>: Url will take you to exact version git repository <br/>
-> <b>latest-version-repository</b>: Url will take you to latest version git repository <br/>
-> <b>exact-version-registry</b>: Url will take you to npm registry <br/>
+> <b>exact-version-license</b>: url will take you to the exact version's license file <br/>
+> <b>latest-version-license</b>: url will take you to the latest version's license file <br/>
+> <b>exact-version-repository</b>: url will take you to the exact version's git repository <br/>
+> <b>latest-version-repository</b>: url will take you to the latest version's git repository <br/>
+> <b>exact-version-registry</b>: url will take you to the exact version's npm registry <br/>
 
 Note: Url will be decide based on above order. Once particular Url is found, further search for Url will stop.
 <br/>&nbsp;
