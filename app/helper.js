@@ -191,6 +191,21 @@ const generateOutputFolder = (basePath, outputFolderName) => {
   return fs.existsSync(path.join(basePath, outputFolderName)) || fs.mkdirSync(path.join(basePath, outputFolderName));
 };
 
+const getTotalTimeElapsed = (startTime, endTime) => {
+  const totalTimeElasapsedInMs = endTime - startTime;
+  let date, hour, minute, second;
+  second = Math.floor(totalTimeElasapsedInMs / 1000);
+  minute = Math.floor(second / 60);
+  second = second % 60;
+  hour = Math.floor(minute / 60);
+  minute = minute % 60;
+  date = Math.floor(hour / 24);
+  hour = hour % 24;
+  hour += date * 24;
+  const totalTimeElasapsed = `${hour}h ${minute}m ${second}s`;
+  return totalTimeElasapsed;
+};
+
 const generateJsonFile = (sortedDependencyJson, outputFilePath, outputFolderName, outputFileName) => {
   const filePath = path.join(outputFilePath, outputFolderName, `${outputFileName}${Constant.FILE_EXTENSION.json}`);
   const beautifiedFinalJson = JSON.stringify(getNewObject(sortedDependencyJson), null, 4);
@@ -226,6 +241,7 @@ const exportModule = {
   getInputFilesPath,
   extractDependencyInfo,
   generateOutputFolder,
+  getTotalTimeElapsed,
   generateJsonFile,
   generateCsvFile
 };

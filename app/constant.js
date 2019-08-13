@@ -47,6 +47,7 @@ const MESSAGE = {
   processingPackage: '>>> Processing',
   similarPackage: 'Similar package(s):',
   totalPackage: 'Total package(s):',
+  totalTimeElapsed: 'Total time elapsed:',
   uniquePackage: 'Unique package(s):',
   validatingUrl: 'validating... ', 
 };

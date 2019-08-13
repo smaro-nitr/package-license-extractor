@@ -17,6 +17,7 @@ const outputFileName = Constant.IO.outputFileName;
 
 let generateOutputFile = false;
 
+const startTime = new Date().getTime();
 let packageProcessed = 0;
 let dependencyJson = [];
 if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
@@ -48,6 +49,8 @@ if (Array.isArray(inputFilesPath) && inputFilesPath.length > 0) {
 
 if (generateOutputFile) {
   Helper.generateOutputFolder(basePath, outputFolderName);
+  const endTime = new Date().getTime();
+  const totalTimeElapsed = Helper.getTotalTimeElapsed(startTime, endTime);
   console.log('\n');
 
   const sortedDependencyJson = dependencyJson.sort((a, b) => { return a.name > b.name ? 1 : -1; });
@@ -55,6 +58,7 @@ if (generateOutputFile) {
   console.log(Constant.COLOR.yellow, `${Constant.MESSAGE.uniquePackage} ${sortedDependencyJson.length}`, Constant.COLOR.reset);
   console.log(Constant.COLOR.yellow, `${Constant.MESSAGE.similarPackage} ${packageProcessed - sortedDependencyJson.length}`, Constant.COLOR.reset);
   console.log(Constant.COLOR.yellow, `${Constant.MESSAGE.totalPackage} ${packageProcessed}`, Constant.COLOR.reset);
+  console.log(Constant.COLOR.yellow, `${Constant.MESSAGE.totalTimeElapsed} ${totalTimeElapsed}`, Constant.COLOR.reset);
   console.log('\n');
 
   Helper.generateJsonFile(sortedDependencyJson, basePath, outputFolderName, outputFileName);

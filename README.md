@@ -2,13 +2,13 @@
 
 ## About
 To find the license of all npm dependency used in your project.
-<br/>Henceforth avoiding all legal challenges ahead, that may arises out of license conflict.
+<br/>Henceforth avoiding all legal challenges ahead, that may arise out of license conflict.
 
 Feature:
 * It doesn`t require node_modules to extract package's license details.
 * All dependency with similar name and version are merged together (duplication avoided).
 * Doesn`t need to be installed along with your project dependency.
-* Fetch actual license URL from repository (if availiable), else provide repository URL.
+* Fetch actual license URL from a repository (if available), else provide repository URL.
 
 Learn more on license: https://opensource.org/licenses
 <br/>&nbsp;
@@ -18,7 +18,7 @@ Global installation
 ```shell
 npm install package-license-extractor -g
 ```
-Note: Doesn`t required to be installed as a dependency in your project
+Note: Doesn`t require to be installed as a dependency in your project
 <br/>&nbsp;
 
 ## Flags Available
@@ -44,12 +44,12 @@ Once globally installed. Based on your requirement, it can be used in following 
 extract-license
 ```
 
-* If you want to scan a <b>multiple project</b>, then open the parent folder containing all projects and run the below command -
+* If you want to scan for <b>multiple projects</b>, then open the parent folder containing all projects and run the below command -
 ```shell
 extract-license --projectScanType=multi
 ```
 
-Example (multiple project):
+Example (multiple projects):
 * Folder Structure: C > All_Projects > Project_One, Project_Two, So on ..
 * Run the command in All_Projects folder to get the license detail of Project_One, Project_Two, So on ..
 <br/>&nbsp;
@@ -66,15 +66,16 @@ Example (multiple project):
 > <b>latest-version-repository</b>: url will take you to the latest version's git repository <br/>
 > <b>exact-version-registry</b>: url will take you to the exact version's npm registry <br/>
 
-Note: Url will be decide based on above order. Once particular Url is found, further search for Url will stop.
+Note: URL will be decided based on the validation order mentioned above. Once a particular URL is found and validated programmatically, further search for URL will stop.
 <br/>&nbsp;
 
 ## Note
-Internet connection is a must to make it work and time required to fetch depends upon the no of dependency and your connection speed.
+Internet connection is required to make use of this package.<br/>
+Total time required to depend on no of dependency info is being fetched and also on your internet connection speed.
 <br/>&nbsp;
 
 ## Contact
 * Author: Subhendu Kumar Sahoo
 * Email: smaro.nitr@gmail.com
 * Website: https://smaro-nitr.github.io
-* Always welcome for bugfix, feature suggestion and feedback
+* Always welcome for a bugfix, feature suggestion, and feedback
