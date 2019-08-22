@@ -43,12 +43,14 @@ const MESSAGE = {
   invalidNpmDependency: 'Local dependency file',
   invalidPackageJson: 'Invalid package.json',
   jsonSuccess: 'Successfully generated the JSON file',
+  na: 'NA',
   npmException: 'NPM exception: ',
   processingPackage: '>>> Processing',
   similarPackage: 'Similar package(s):',
   totalPackage: 'Total package(s):',
   totalTimeElapsed: 'Total time elapsed:',
   uniquePackage: 'Unique package(s):',
+  unknown: 'UNKNOWN',
   validatingUrl: 'validating... ', 
 };
 

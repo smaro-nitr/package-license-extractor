@@ -82,7 +82,7 @@ const getLinkDetail = (dependencyName, exactDependencyVersion) => {
   const latestVersionDependency = `npm view ${dependencyName} npm repository.url --silent`;
   const latestVersionLink = execSync(latestVersionDependency).toString('utf8').trim();
 
-  let linkDetail = { type: 'UNKNOWN', url: 'NA' };
+  let linkDetail = { type: Constant.MESSAGE.unknown, url: Constant.MESSAGE.na };
   if (exactVersionLink || latestVersionLink) {
     const exactVersionRepositoryUrl = getRepositoryUrl(exactVersionLink);
     const exactVersionLicenseUrl = exactVersionRepositoryUrl + Constant.URL.licensePath;
@@ -168,7 +168,15 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
             const linkType = linkDetail.type;
             const linkUrl = linkDetail.url;
 
-            dependencyJson.push({ name: dependencyName, version: dependencyVersion, license, linkType, linkUrl, packageName });
+            dependencyJson.push({
+              name: dependencyName,
+              version: dependencyVersion,
+              license,
+              linkType,
+              linkUrl,
+              packageName
+            });
+
             pushToFinalObject = false;
           } else {
             const packageNameDoesnotExist = oldMatchingValue.packageName.indexOf(packageName) < 0;
@@ -178,7 +186,14 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
           throw Constant.MESSAGE.invalidNpmDependency;
         }
       } catch (err) {
-        dependencyJson.push({ name: dependencyName, version: dependencyVersion, license: 'UNKNOWN', linkType:'UNKNOWN', linkUrl: 'NA', packageName });
+        dependencyJson.push({
+          name: dependencyName,
+          version: dependencyVersion,
+          license: Constant.MESSAGE.unknown,
+          linkType:Constant.MESSAGE.unknown,
+          linkUrl: Constant.MESSAGE.na,
+          packageName
+        });
         console.log(Constant.COLOR.red, Constant.MESSAGE.npmException + err, Constant.COLOR.reset);
       }
     });
