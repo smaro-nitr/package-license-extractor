@@ -66,7 +66,7 @@ Example (multiple projects):
 > <b>latest-version-repository</b>: url will take you to the latest version's git repository <br/>
 > <b>exact-version-registry</b>: url will take you to the exact version's npm registry <br/>
 
-Note: URL will be decided based on the validation order mentioned above. Once a particular URL is found and validated programmatically, further search for URL will stop.
+Note: Even though there is some programmatic limitation in finding URL, We try our best to make you arrive as closest as possible to the license URL. URL will be decided based on the validation order mentioned above. Once a particular URL is found and validated programmatically, further search for URL will stop. So higher the order, closest is the link.
 <br/>&nbsp;
 
 ## Note
