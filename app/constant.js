@@ -50,7 +50,7 @@ const MESSAGE = {
   totalPackage: 'Total package(s):',
   totalTimeElapsed: 'Total time elapsed:',
   uniquePackage: 'Unique package(s):',
-  unknown: 'UNKNOWN',
+  unknown: 'Unknown',
   validatingUrl: 'validating... ', 
 };
 
