@@ -57,7 +57,8 @@ const MESSAGE = {
 const URL = {
   https: 'https://',
   npmRegistry: 'www.npmjs.com/package/',
-  licensePath: '/blob/master/LICENSE',
+  uppercaseLicensePath: '/blob/master/LICENSE',
+  capitalizeLicensePath: '/blob/master/License',
   licensePathWithMdExtension: '/blob/master/LICENSE.md',
   licenseType: {
     license: 'exact-version-license',
