@@ -50,15 +50,18 @@ const MESSAGE = {
   totalPackage: 'Total package(s):',
   totalTimeElapsed: 'Total time elapsed:',
   uniquePackage: 'Unique package(s):',
-  unknown: 'UNKNOWN',
+  unknown: 'Unknown',
   validatingUrl: 'validating... ', 
 };
 
 const URL = {
   https: 'https://',
   npmRegistry: 'www.npmjs.com/package/',
-  licensePath: '/blob/master/LICENSE',
+  uppercaseLicensePath: '/blob/master/LICENSE',
+  capitalizeLicensePath: '/blob/master/License',
+  lowercaseLicensePath: '/blob/master/license',
   licensePathWithMdExtension: '/blob/master/LICENSE.md',
+  licensePathWithTxtExtension: '/blob/master/LICENSE.txt',
   licenseType: {
     license: 'exact-version-license',
     repository: 'exact-version-repository',
