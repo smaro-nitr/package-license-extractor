@@ -143,6 +143,7 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
   if (dependency === Object(dependency)) {
     Object.keys(dependency).forEach(dependencyName => {
       const dependencyVersion = dependency[dependencyName];
+      const exactDependencyVersion = getExactDependecyVersion(dependencyVersion);
       packageProcessed++;
       console.log(Constant.COLOR.cyan, `${packageProcessed}: ${dependencyName}@${dependencyVersion}`, Constant.COLOR.reset);
 
@@ -154,15 +155,13 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
           dependencyJson.forEach(existingDependency => {
             const existingDependencyName = existingDependency.name;
             const existingDependencyVersion = existingDependency.version;
-            if (dependencyName === existingDependencyName && dependencyVersion === existingDependencyVersion) {
+            if (dependencyName === existingDependencyName && exactDependencyVersion === existingDependencyVersion) {
               pushToFinalObject = false;
               oldMatchingValue = existingDependency;
             }
           });
 
           if (pushToFinalObject) {
-            const exactDependencyVersion = getExactDependecyVersion(dependencyVersion);
-
             const license = getDependencyLicense(dependencyName, exactDependencyVersion);
             const linkDetail = getLinkDetail(dependencyName, exactDependencyVersion);
             const linkType = linkDetail.type;
@@ -170,7 +169,7 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
 
             dependencyJson.push({
               name: dependencyName,
-              version: dependencyVersion,
+              version: exactDependencyVersion,
               license,
               linkType,
               linkUrl,
@@ -188,7 +187,7 @@ const extractDependencyInfo = (dependencyInfoInit, packageProcessedInit, depende
       } catch (err) {
         dependencyJson.push({
           name: dependencyName,
-          version: dependencyVersion,
+          version: exactDependencyVersion,
           license: Constant.MESSAGE.unknown,
           linkType:Constant.MESSAGE.unknown,
           linkUrl: Constant.MESSAGE.na,
