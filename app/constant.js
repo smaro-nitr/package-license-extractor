@@ -59,7 +59,9 @@ const URL = {
   npmRegistry: 'www.npmjs.com/package/',
   uppercaseLicensePath: '/blob/master/LICENSE',
   capitalizeLicensePath: '/blob/master/License',
+  lowercaseLicensePath: '/blob/master/license',
   licensePathWithMdExtension: '/blob/master/LICENSE.md',
+  licensePathWithTxtExtension: '/blob/master/LICENSE.txt',
   licenseType: {
     license: 'exact-version-license',
     repository: 'exact-version-repository',

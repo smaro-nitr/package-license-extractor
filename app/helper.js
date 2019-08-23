@@ -90,13 +90,17 @@ const getLinkDetail = (dependencyName, exactDependencyVersion) => {
   const exactVersionRepositoryUrl = isValidExactVersionLink && getRepositoryUrl(exactVersionLink);
   const exactVersionUppercaseLicenseUrl = exactVersionRepositoryUrl && (exactVersionRepositoryUrl + Constant.URL.uppercaseLicensePath);
   const exactVersionCapitalizeLicenseUrl = exactVersionRepositoryUrl && (exactVersionRepositoryUrl + Constant.URL.capitalizeLicensePath);
+  const exactVersionLowercaseLicenseUrl = exactVersionRepositoryUrl && (exactVersionRepositoryUrl + Constant.URL.lowercaseLicensePath);
   const exactVersionLicenseUrlWithMdExtension = exactVersionUppercaseLicenseUrl && (exactVersionRepositoryUrl + Constant.URL.licensePathWithMdExtension);
+  const exactVersionLicenseUrlWithTxtExtension = exactVersionUppercaseLicenseUrl && (exactVersionRepositoryUrl + Constant.URL.licensePathWithTxtExtension);
 
   const isValidLatestVersionLink = latestVersionLink.includes('github.com');
   const latestVersionRepositoryUrl = isValidLatestVersionLink && getRepositoryUrl(latestVersionLink);
   const latestVersionUppercaseLicenseUrl = latestVersionRepositoryUrl && (latestVersionRepositoryUrl + Constant.URL.uppercaseLicensePath);
   const latestVersionCapitalizeLicenseUrl = latestVersionRepositoryUrl && (latestVersionRepositoryUrl + Constant.URL.capitalizeLicensePath);
+  const latestVersionLowercaseLicenseUrl = latestVersionRepositoryUrl && (latestVersionRepositoryUrl + Constant.URL.lowercaseLicensePath);
   const latestVersionLicenseUrlWithMdExtension = latestVersionUppercaseLicenseUrl && (latestVersionRepositoryUrl + Constant.URL.licensePathWithMdExtension);
+  const latestVersionLicenseUrlWithTxtExtension = latestVersionUppercaseLicenseUrl && (latestVersionRepositoryUrl + Constant.URL.licensePathWithTxtExtension);
 
   const registryUrl = Constant.URL.https + Constant.URL.npmRegistry + dependencyName + '/v/' + exactDependencyVersion;
 
@@ -106,8 +110,14 @@ const getLinkDetail = (dependencyName, exactDependencyVersion) => {
   } else if (isValidUrl(exactVersionLicenseUrlWithMdExtension)) {
     linkDetail.url = exactVersionLicenseUrlWithMdExtension;
     linkDetail.type = Constant.URL.licenseType.license;
+  } else if (isValidUrl(exactVersionLicenseUrlWithTxtExtension)) {
+    linkDetail.url = exactVersionLicenseUrlWithTxtExtension;
+    linkDetail.type = Constant.URL.licenseType.license;
   } else if (isValidUrl(exactVersionCapitalizeLicenseUrl)) {
     linkDetail.url = exactVersionCapitalizeLicenseUrl;
+    linkDetail.type = Constant.URL.licenseType.license;
+  } else if (isValidUrl(exactVersionLowercaseLicenseUrl)) {
+    linkDetail.url = exactVersionLowercaseLicenseUrl;
     linkDetail.type = Constant.URL.licenseType.license;
   } else if (isValidUrl(latestVersionUppercaseLicenseUrl)) {
     linkDetail.url = latestVersionUppercaseLicenseUrl;
@@ -115,8 +125,14 @@ const getLinkDetail = (dependencyName, exactDependencyVersion) => {
   } else if (isValidUrl(latestVersionLicenseUrlWithMdExtension)) {
     linkDetail.url = latestVersionLicenseUrlWithMdExtension;
     linkDetail.type = Constant.URL.licenseType.latestLicense;
-  }  else if (isValidUrl(latestVersionCapitalizeLicenseUrl)) {
+  } else if (isValidUrl(latestVersionLicenseUrlWithTxtExtension)) {
+    linkDetail.url = latestVersionLicenseUrlWithTxtExtension;
+    linkDetail.type = Constant.URL.licenseType.latestLicense;
+  } else if (isValidUrl(latestVersionCapitalizeLicenseUrl)) {
     linkDetail.url = latestVersionCapitalizeLicenseUrl;
+    linkDetail.type = Constant.URL.licenseType.latestLicense;
+  } else if (isValidUrl(latestVersionLowercaseLicenseUrl)) {
+    linkDetail.url = latestVersionLowercaseLicenseUrl;
     linkDetail.type = Constant.URL.licenseType.latestLicense;
   } else if (isValidUrl(exactVersionRepositoryUrl)) {
     linkDetail.url = exactVersionRepositoryUrl;
