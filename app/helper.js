@@ -58,7 +58,7 @@ const getNewObject = (obj) => {
 };
 
 const getRepositoryUrl = (link) => {
-  let repositoryUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length);
+  let repositoryUrl = Constant.URL.https + link.substring(link.indexOf('github.com'), link.length).replace(/:/g, '/');
   if (repositoryUrl.indexOf('\'') > 0)
     repositoryUrl = repositoryUrl.substring(0, repositoryUrl.indexOf('\''));
   if (repositoryUrl.indexOf('.git') === (repositoryUrl.length - 4))
